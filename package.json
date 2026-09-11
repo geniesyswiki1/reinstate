@@ -15,12 +15,14 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "casecheck": "tsx scripts/casetype-lint.ts",
     "dashcheck": "tsx scripts/dash-lint.ts",
-    "fixture": "tsx scripts/run-fixture.ts"
+    "fixture": "tsx scripts/run-fixture.ts",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@netlify/functions": "^2.8.2",
     "@netlify/plugin-nextjs": "^5.15.13",
     "@resvg/resvg-js": "^2.6.2",
+    "patch-package": "^8.0.1",
     "tsx": "^4.23.13",
     "typescript": "^5.6.3"
   }

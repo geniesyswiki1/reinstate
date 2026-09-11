@@ -11,12 +11,11 @@ credentials, which is why they were not run for you.
 
 ## 1. Point the app at your accounts
 
-Three placeholders in this repo must be replaced. Nothing else needs editing.
+Three placeholders in `eas.json` must be replaced. `eas init` writes the project id and the
+owner into `app.json` itself, so neither needs editing by hand.
 
 | File | Field | Replace with |
 | --- | --- | --- |
-| `app.json` | `expo.extra.eas.projectId` | your EAS project id, from `eas init` |
-| `app.json` | `expo.owner` | your Expo account or organisation slug |
 | `eas.json` | `submit.production.ios.appleId` | your Apple ID email |
 | `eas.json` | `submit.production.ios.ascAppId` | the App Store Connect app id |
 | `eas.json` | `submit.production.ios.appleTeamId` | your Apple team id |
@@ -79,6 +78,14 @@ Put the Play service account JSON at `apps/mobile/play-service-account.json`. It
 - Fill in the privacy labels from the table in `store-listing.md`.
 - Confirm the free classify runs before any paywall. Apple reviewers try the core action first, and
   it must work without an account.
+
+## A patch you must not delete
+
+`patches/xcode+3.0.1.patch` is required. `expo-share-intent` adds the Share Extension target through
+the `xcode` package, whose `correctForPath` reads `.path` on a `Resources` group that a share
+extension does not have, so `expo prebuild` and therefore every iOS build fails without it. The root
+`postinstall` script applies it on every install, including `npm ci` in CI. If you ever see
+"Could not add resource files to the Share Extension", the patch did not apply.
 
 ## What this app does not do yet
 
