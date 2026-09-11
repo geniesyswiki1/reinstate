@@ -10,3 +10,7 @@ dist/
 *.tsbuildinfo
 coverage/
 .expo/
+
+# Play submission key, never committed
+apps/mobile/play-service-account.json
+apps/mobile/.expo/

@@ -12,7 +12,9 @@ Built to `SPEC.md`. Read that first; this file only covers running the code.
 apps/web              Next.js 15 app: hero classify, 20 landing pages, case workspace, API routes
 packages/shared       18 case types, the four prompts, types, the genericity scorer, refusal rules
 content               landing.ts (20 pages), faq.ts, pricing.ts
-scripts               casetype-lint.ts (offline), run-fixture.ts (needs an API key)
+apps/mobile           Expo app: the six screens in section 12.5, EAS build and submit config
+scripts               casetype-lint.ts (offline), run-fixture.ts (needs an API key),
+                      render-app-assets.mjs (icons and splash from the brand SVGs)
 supabase/schema.sql   the data model in section 4.4, plus the nightly purge function
 netlify/functions     the scheduled purge that calls /api/purge
 fixtures              an Amazon inauthentic notice and a case with two invoices, one dated late
@@ -70,3 +72,23 @@ webhook at `/api/webhooks/revenuecat` with `Authorization: Bearer $REVENUECAT_WE
 - Never promise reinstatement, in copy or in a generated document.
 - Nothing is cited in a draft that the user has not confirmed. Missing facts become
   `[MISSING: ...]` markers, which the pre-check turns into blocking items.
+
+## The mobile app
+
+`apps/mobile` is an Expo app sharing `packages/shared` with the web, so the case types, the intake
+schemas and the API client are the same objects on both. All model calls stay server side; the app
+never holds a key.
+
+```bash
+npm run start --workspace=@reinstate/mobile   # Expo dev server
+npm run typecheck --workspace=@reinstate/mobile
+node scripts/render-app-assets.mjs            # re-render icons and splash after editing the SVGs
+```
+
+`apps/mobile/TESTFLIGHT.md` is the runbook for getting it onto TestFlight and the Play internal
+track: which placeholders to replace, and the two EAS commands that build and submit. It needs an
+Apple Developer account, an EAS account and a RevenueCat project.
+
+`apps/mobile/store-listing.md` holds the store copy, keywords, privacy labels, in-app purchase ids,
+and the review notes for Apple, including a sample notice a reviewer can paste to reach the core
+action without an account.

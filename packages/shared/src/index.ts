@@ -5,3 +5,4 @@ export * from './genericity';
 export * from './anthropic';
 export * from './refusal';
 export * from '../prompts/index';
+export * from './api-client';

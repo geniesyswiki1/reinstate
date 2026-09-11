@@ -42,6 +42,10 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The Expo app shares packages/shared, so a change there can break it.
+      - name: Typecheck the mobile app
+        run: npm run typecheck --workspace=@reinstate/mobile
+
       # Section 2.3: hyphens only, everywhere, including generated documents.
       # SPEC.md is excluded because it is the source document, kept verbatim.
       - name: No em or en dashes in shipped copy
