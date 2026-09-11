@@ -109,7 +109,7 @@ expect(
   `${datedBullets.length} of ${bullets.length} bullets carry a date`,
 );
 expect(findBannedPhrases(draft).length === 0, 'no banned phrases');
-expect(!/[‐-―−]/.test(draft), 'hyphens only, no em or en dashes');
+expect(!/[\u2010-\u2015\u2212]/.test(draft), 'hyphens only, no em or en dashes');
 expect(
   words >= caseType.limits.target_words_min && words <= caseType.limits.target_words_max,
   `${words} words, target ${caseType.limits.target_words_min} to ${caseType.limits.target_words_max}`,

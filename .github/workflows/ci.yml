@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push supersedes an in-flight run on the same branch.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Case types, types, lint, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      # Offline: validates all 18 case types and the genericity scorer. No API key needed.
+      - name: Case types
+        run: npm run casecheck
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # Also typechecks the web app against its own tsconfig, and prerenders
+      # the 20 landing pages with their OG images.
+      - name: Build
+        run: npm run build
+
+      # Section 2.3: hyphens only, everywhere, including generated documents.
+      # SPEC.md is excluded because it is the source document, kept verbatim.
+      - name: No em or en dashes in shipped copy
+        run: npm run dashcheck
+
+# npm run fixture is not run here. It calls the Anthropic API and needs
+# ANTHROPIC_API_KEY, so it stays a local and pre-release check.

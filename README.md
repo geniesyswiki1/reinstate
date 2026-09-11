@@ -36,8 +36,12 @@ npm run casecheck   # offline: validates all 18 case types and the genericity sc
 npm run typecheck   # shared packages, content and scripts
 npm run lint        # the web app
 npm run build       # the web app, including the 20 landing pages and their OG images
+npm run dashcheck   # hyphens only: no em or en dashes in shipped copy
 npm run fixture     # needs ANTHROPIC_API_KEY: runs classify, draft and review end to end
 ```
+
+`.github/workflows/ci.yml` runs everything except `fixture` on every pull request and on
+pushes to `main`. `fixture` calls the Anthropic API, so it stays a local and pre-release check.
 
 `npm run fixture` is the Phase 1 check in section 11. It asserts that the fixture notice
 classifies as `amazon-inauthentic` at 0.9 or better, that the draft carries the three headed

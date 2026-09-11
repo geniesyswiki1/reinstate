@@ -83,7 +83,7 @@ for (const ct of CASE_TYPES) {
 
   // Section 2.3: hyphens only, everywhere, including the case type content.
   const blob = JSON.stringify(ct);
-  const dashes = blob.match(/[‐-―−]/g);
+  const dashes = blob.match(/[\u2010-\u2015\u2212]/g);
   check(!dashes, `${at} contains an em or en dash, which the brand never uses`);
 
   // No banned phrase should appear in copy we ship.

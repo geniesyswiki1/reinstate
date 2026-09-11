@@ -17,5 +17,5 @@ export function findBannedPhrases(text: string): string[] {
 
 /** Hyphens only. No em or en dashes anywhere, including generated documents (section 2.3). */
 export function normaliseDashes(text: string): string {
-  return text.replace(/[‐-―−]/g, '-');
+  return text.replace(/[\u2010-\u2015\u2212]/g, '-');
 }
