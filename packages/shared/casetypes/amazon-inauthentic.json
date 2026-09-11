@@ -1,0 +1,77 @@
+{
+  "id": "amazon-inauthentic",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Section 3 account deactivation, inauthentic or counterfeit complaint",
+  "distinguishing_phrases": [
+    "inauthentic",
+    "counterfeit",
+    "not authentic",
+    "Section 3 of the Amazon Business Solutions Agreement",
+    "customers have complained about the authenticity",
+    "invoices from your supplier issued in the last 365 days",
+    "supply chain",
+    "proof of authenticity"
+  ],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the deactivation notice?", "type": "date", "why": "The Plan of Action opens by naming the account and the notice date. Without it the reviewer cannot match your appeal to the case.", "required": true },
+    { "id": "asins", "label": "Which ASINs does the notice name?", "type": "longtext", "why": "Amazon rejects appeals that do not address the exact ASINs in the complaint.", "required": true, "placeholder": "B0ABC12345, B0DEF67890" },
+    { "id": "supplier_name", "label": "Who did you buy this stock from?", "type": "text", "why": "The invoice must come from a business Amazon can verify. A marketplace seller or a retail shop is the commonest reason this appeal fails.", "required": true },
+    { "id": "supplier_relationship", "label": "How did you find this supplier and how long have you bought from them?", "type": "longtext", "why": "Seller Performance reads the supply chain as a story. A supplier you found once on a wholesale directory reads differently from a distributor you have an account with.", "required": true },
+    { "id": "supplier_is_authorised", "label": "Is the supplier an authorised distributor for the brand?", "type": "choice", "options": ["Yes, and I can show it", "Yes, but I have no proof", "No", "I don't know"], "why": "For a counterfeit complaint, authorisation or a distributor letter is the strongest single document.", "required": true },
+    { "id": "invoice_has_address_phone", "label": "Do your invoices show the supplier's full address and phone number?", "type": "boolean", "why": "Amazon calls the supplier. An invoice with no phone number is treated as unverifiable and the appeal is closed.", "required": true },
+    { "id": "purchase_dates", "label": "When did you buy the stock that the complaints relate to?", "type": "text", "why": "Invoices dated after your first sale of the ASIN are the single commonest rejection on this case type.", "required": true },
+    { "id": "first_listing_date", "label": "When did you first list or first sell these ASINs?", "type": "date", "why": "We compare this against the invoice dates before you submit, because Amazon will.", "required": true },
+    { "id": "units_invoiced", "label": "How many units do the invoices cover?", "type": "number", "why": "If you sold more units than you can show invoices for, Amazon reads the difference as unsourced stock.", "required": true },
+    { "id": "units_sold", "label": "How many units of these ASINs have you sold?", "type": "number", "why": "Same reason. The two numbers have to reconcile or be explained.", "required": true },
+    { "id": "was_arbitrage", "label": "Was any of this stock bought from a retail shop or another marketplace (retail or online arbitrage)?", "type": "boolean", "why": "Retail receipts are not invoices. If the answer is yes we have to build the appeal around what you have actually changed, not around documents Amazon will not accept.", "required": true },
+    { "id": "items_genuine", "label": "To the best of your knowledge, were the items genuine?", "type": "choice", "options": ["Yes, genuine and I can evidence the chain", "Yes, but my documentation is weak", "No, or I am not sure"], "why": "We cannot draft an appeal that says the items were authentic if your answer here says they were not.", "required": true },
+    { "id": "complaint_reason", "label": "What do you believe caused the complaints?", "type": "longtext", "why": "The root cause section has to explain what you did or failed to do. Restating the notice is an automatic rejection.", "required": true },
+    { "id": "changes_made", "label": "What have you already changed in how you source and check stock?", "type": "longtext", "why": "Corrective actions must be things already done, with dates. Promises belong in preventive measures.", "required": true },
+    { "id": "preventive_owner", "label": "Who in your business now checks incoming stock, and how often?", "type": "text", "why": "A preventive measure with no owner and no cadence is not verifiable, which makes it worthless to a reviewer.", "required": true },
+    { "id": "prior_appeals", "label": "Have you appealed this before? If so, what did Amazon say?", "type": "longtext", "why": "A second appeal that ignores the first rejection gets the same answer.", "required": false }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The deactivation notice itself", "why": "We quote the ASINs and the notice date exactly as Amazon wrote them.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "invoices", "label": "Supplier invoices covering the ASINs named", "why": "The core document. Must show the supplier's full address and phone, your business name, the ASINs or product names, quantities and dates.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "supplier_authorisation", "label": "Authorisation or distributor letter from the brand, if you have one", "why": "Turns a supply chain claim into a verifiable one.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "proof_of_payment", "label": "Proof of payment for the invoices (bank statement line or remittance)", "why": "Amazon sometimes asks for it when an invoice looks new. Having it ready shortens the exchange.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "supplier_website", "label": "Supplier's business registration or website details", "why": "Helps the reviewer verify the supplier exists as a trading business.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Root cause", "guidance": "State what you did or failed to do that led to the complaints. Name the sourcing decision, the check that was missing, or the record that was not kept. Do not restate the notice. Do not blame the customer or Amazon. Two to four sentences." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets, each starting with a verb, each describing something already done. Reference the attached document by name where one exists." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets, each with an owner and a cadence, each verifiable. No promises without a system behind them." }
+    ],
+    "opening": "One sentence naming the seller account, the ASINs in the notice and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. Seller Performance rejects template language." },
+    { "id": "root_cause_restates_notice", "severity": "blocking", "check": "The root cause explains the seller's own act or omission rather than repeating the notice wording.", "fail_message": "The root cause restates Amazon's notice instead of explaining what you did or failed to do." },
+    { "id": "invoice_after_listing", "severity": "blocking", "check": "No cited invoice is dated after the first listing or first sale date.", "fail_message": "An invoice dated after your first sale cannot evidence the stock that was sold." },
+    { "id": "invoice_missing_contact", "severity": "blocking", "check": "Every cited invoice shows the supplier's full address and phone number.", "fail_message": "Amazon calls the supplier. An invoice with no phone number is treated as unverifiable." },
+    { "id": "invoices_not_attached", "severity": "blocking", "check": "Every invoice referenced in the text is in the confirmed evidence list.", "fail_message": "The appeal cites an invoice that has not been uploaded." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document rather than letting the draft generalise." },
+    { "id": "quantity_mismatch", "severity": "blocking", "check": "Units invoiced cover units sold, or the difference is explained in the text.", "fail_message": "You sold more units than your invoices cover and the appeal does not explain the difference." },
+    { "id": "asin_not_named", "severity": "advisory", "check": "The ASINs named in the notice appear in the appeal.", "fail_message": "The appeal does not name the ASINs from the notice." },
+    { "id": "unverifiable_preventive", "severity": "advisory", "check": "Each preventive measure names an owner and a cadence.", "fail_message": "A preventive measure with no owner and no cadence cannot be verified." },
+    { "id": "too_long", "severity": "advisory", "check": "Under 600 words.", "fail_message": "Over 600 words. Reviewers skim; the extra length dilutes the specifics." }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, Reactivate your account",
+    "steps": [
+      "Open Seller Central and go to Performance, then Account Health.",
+      "Click Reactivate your account on the deactivation banner.",
+      "Paste the Plan of Action into the appeal text box as plain text.",
+      "Attach the invoices and any authorisation letter as separate files.",
+      "Submit once. Do not open a second case; duplicate appeals delay the review."
+    ],
+    "turnaround": "Amazon's stated turnaround is 3 to 5 business days."
+  },
+  "limits": { "target_words_min": 350, "target_words_max": 600, "max_attachments": 10 }
+}

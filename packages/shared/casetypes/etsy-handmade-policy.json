@@ -1,0 +1,56 @@
+{
+  "id": "etsy-handmade-policy",
+  "platform": "etsy",
+  "tier": "marketplace",
+  "name": "Shop suspension, handmade or reselling policy",
+  "distinguishing_phrases": ["handmade policy", "reselling", "mass produced", "not handmade", "production partner", "Etsy is a marketplace for handmade", "commercially available items"],
+  "intake": [
+    { "id": "notice_date", "label": "What date did Etsy suspend the shop?", "type": "date", "why": "The appeal opens with the shop name and the date.", "required": true },
+    { "id": "shop_name", "label": "What is your shop name?", "type": "text", "why": "Etsy matches appeals by shop name.", "required": true },
+    { "id": "making_process", "label": "Describe exactly how your items are made, step by step.", "type": "longtext", "why": "Etsy's handmade policy is about your role in the process. Vague craft language is what gets these rejected.", "required": true },
+    { "id": "materials_source", "label": "Where do you buy your materials and blanks?", "type": "longtext", "why": "Buying blanks is allowed. Buying finished goods is not. The appeal has to make the difference obvious.", "required": true },
+    { "id": "production_partners", "label": "Do you use a production partner, and is it declared on every listing?", "type": "choice", "options": ["Yes, declared on every listing", "Yes, but not declared", "No production partners"], "why": "An undeclared production partner is the single commonest true cause of this suspension.", "required": true },
+    { "id": "design_ownership", "label": "Who designed the items?", "type": "longtext", "why": "The policy requires the seller to design or make. Naming the designer resolves most of the question.", "required": true },
+    { "id": "listing_language", "label": "Do any of your listings use words like wholesale, dropship, stock or resale?", "type": "boolean", "why": "Automated checks flag this language regardless of what you actually do.", "required": true },
+    { "id": "changes_made", "label": "What have you already changed in your listings or partner declarations, and on what dates?", "type": "longtext", "why": "Corrective actions carry dates.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The suspension email", "why": "We quote the policy Etsy named.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "process_photos", "label": "Photographs of your workspace and the item at each stage of making", "why": "The strongest evidence in a handmade case. Unstaged, in sequence, with the item recognisable.", "required": true, "accepts": ["png", "jpg", "pdf"] },
+    { "id": "materials_invoices", "label": "Invoices for materials, blanks or components", "why": "Shows you buy inputs rather than finished goods.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "partner_agreement", "label": "Your production partner agreement, if you use one", "why": "Supports a declared partner relationship.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "design_files", "label": "Your design files, sketches or patterns", "why": "Evidences that you designed the item.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "What the shop sells and how it is made", "guidance": "The making process step by step, naming tools, materials and where each input comes from." },
+      { "heading": "How the shop meets the handmade policy", "guidance": "Address design ownership and production partner declaration directly, with the attached evidence named." },
+      { "heading": "What has changed", "guidance": "Dated bullets: partners declared, listing wording corrected, photographs added." },
+      { "heading": "Evidence attached", "guidance": "One line naming each attachment and what it shows." }
+    ],
+    "opening": "One sentence naming the shop, the policy Etsy cited and the suspension date.",
+    "closing": "One short line offering any further document Etsy needs.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "over_limit", "severity": "blocking", "check": "Under 2000 characters.", "fail_message": "Etsy's appeal box takes 2000 characters. Anything longer is cut off mid sentence." },
+    { "id": "no_process_detail", "severity": "blocking", "check": "The appeal describes the making process step by step with named tools and materials.", "fail_message": "The appeal describes the craft in general terms. The policy is about your specific role in making the item." },
+    { "id": "partner_undeclared", "severity": "blocking", "check": "Where a production partner is used, the appeal states that it is now declared on every listing, with the date.", "fail_message": "An undeclared production partner will be found. Declare it and say when you did." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any shop. Etsy Trust and Safety reads hundreds of these a day." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the photographs." },
+    { "id": "no_photos", "severity": "advisory", "check": "Process photographs are in the confirmed evidence.", "fail_message": "Without process photographs this appeal rests on your description alone." },
+    { "id": "no_dates", "severity": "advisory", "check": "Corrective actions carry dates.", "fail_message": "A correction with no date reads as a promise, not an action taken." }
+  ],
+  "submission": {
+    "where": "The appeal link in Etsy's suspension email, or Etsy Support, Contact us",
+    "steps": [
+      "Open the suspension email and use the appeal link it contains.",
+      "Paste the appeal as plain text within 2000 characters.",
+      "Attach process photographs and materials invoices.",
+      "Send once and wait."
+    ],
+    "turnaround": "Etsy typically replies within 3 to 7 days."
+  },
+  "limits": { "max_chars": 2000, "target_words_min": 180, "target_words_max": 320, "max_attachments": 8 }
+}

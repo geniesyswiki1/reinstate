@@ -1,0 +1,57 @@
+{
+  "id": "amazon-restricted-products",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Section 3 deactivation, restricted or prohibited products",
+  "distinguishing_phrases": ["restricted products policy", "prohibited", "not permitted for sale", "hazmat", "expired", "pesticide", "medical device", "unsafe product", "safety complaint"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The appeal opens by naming the account, the ASINs and the notice date.", "required": true },
+    { "id": "asins", "label": "Which ASINs or listings does the notice name?", "type": "longtext", "why": "The appeal has to address each listing Amazon named.", "required": true },
+    { "id": "policy_named", "label": "Which restricted products policy does the notice cite?", "type": "text", "why": "Amazon expects you to quote the policy back and show you have read it.", "required": true },
+    { "id": "why_listed", "label": "Why was this product listed? What did you believe about it?", "type": "longtext", "why": "The root cause is a sourcing or research failure. Naming it is what separates an accepted appeal from a rejected one.", "required": true },
+    { "id": "product_compliant", "label": "Is the product actually permitted for sale in this marketplace?", "type": "choice", "options": ["Yes, and I have the compliance documents", "Yes, but I have no documents", "No, it should not have been listed"], "why": "If it should not have been listed, the appeal is about removal and process, not about defending the listing.", "required": true },
+    { "id": "stock_action", "label": "What have you done with the remaining stock?", "type": "longtext", "why": "Amazon asks what happened to the inventory. An unanswered question stalls the case.", "required": true },
+    { "id": "listings_removed", "label": "Have you removed the listings, and on what date?", "type": "text", "why": "Removal is the first corrective action and it must carry a date.", "required": true },
+    { "id": "review_process", "label": "How will new products be checked against the restricted products policy before listing?", "type": "longtext", "why": "Preventive measures need a named owner, a checklist and a cadence.", "required": true },
+    { "id": "preventive_owner", "label": "Who owns that check?", "type": "text", "why": "An unowned process is not verifiable.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The deactivation notice", "why": "We quote the policy and ASINs exactly as Amazon wrote them.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "compliance_docs", "label": "Compliance documents for the product (certificates, safety data sheets, test reports, licences)", "why": "Where the product is permitted, these are what turn the appeal.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "removal_proof", "label": "Screenshot or report showing the listings closed or deleted", "why": "Evidences the dated corrective action.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "disposal_proof", "label": "Proof of disposal or removal order for the stock", "why": "Answers the inventory question before Amazon asks it.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "sop", "label": "Your written listing compliance checklist", "why": "A preventive measure with a document behind it is verifiable.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Root cause", "guidance": "Name the check that did not happen before listing. Quote the policy Amazon cited. Do not argue that the product is fine unless the compliance documents are attached." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets: listings removed on a date, stock disposed or recalled on a date, documents obtained on a date." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets naming the owner, the checklist and the cadence of the pre-listing compliance review." }
+    ],
+    "opening": "One sentence naming the seller account, the ASINs and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "policy_not_quoted", "severity": "blocking", "check": "The appeal names the specific restricted products policy from the notice.", "fail_message": "The appeal does not name the policy Amazon cited." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. Seller Performance rejects template language." },
+    { "id": "root_cause_restates_notice", "severity": "blocking", "check": "The root cause explains the seller's own act or omission rather than repeating the notice.", "fail_message": "The root cause restates Amazon's notice instead of explaining what you did or failed to do." },
+    { "id": "defends_without_docs", "severity": "blocking", "check": "The appeal does not claim the product is compliant unless compliance documents are in the confirmed evidence.", "fail_message": "The appeal argues the product is permitted but no compliance document has been uploaded." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "stock_unanswered", "severity": "advisory", "check": "The appeal says what happened to the remaining inventory.", "fail_message": "The appeal does not say what happened to the remaining stock." },
+    { "id": "too_long", "severity": "advisory", "check": "Under 600 words.", "fail_message": "Over 600 words. Reviewers skim; the extra length dilutes the specifics." }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, Reactivate your account",
+    "steps": [
+      "Open Seller Central and go to Performance, then Account Health.",
+      "Click Reactivate your account on the deactivation banner.",
+      "Paste the Plan of Action as plain text.",
+      "Attach compliance documents and proof of removal as separate files."
+    ],
+    "turnaround": "Amazon's stated turnaround is 3 to 5 business days."
+  },
+  "limits": { "target_words_min": 350, "target_words_max": 600, "max_attachments": 10 }
+}

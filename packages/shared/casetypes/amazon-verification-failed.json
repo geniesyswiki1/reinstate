@@ -1,0 +1,223 @@
+{
+  "id": "amazon-verification-failed",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Identity or business verification failure",
+  "distinguishing_phrases": [
+    "verification",
+    "we could not verify",
+    "documents you submitted",
+    "utility bill",
+    "bank statement",
+    "business registration",
+    "beneficial owner",
+    "primary contact person",
+    "seller identity verification"
+  ],
+  "intake": [
+    {
+      "id": "notice_date",
+      "label": "What date is on the notice?",
+      "type": "date",
+      "why": "The cover message names the account and the notice date.",
+      "required": true
+    },
+    {
+      "id": "documents_requested",
+      "label": "Exactly which documents does Amazon ask for?",
+      "type": "longtext",
+      "why": "This case is won on document completeness, not on argument. We build the checklist from the notice.",
+      "required": true
+    },
+    {
+      "id": "rejected_reason",
+      "label": "What reason did Amazon give for rejecting what you sent?",
+      "type": "longtext",
+      "why": "Almost always a mismatch in name, address or document age. Naming it is the whole fix.",
+      "required": true
+    },
+    {
+      "id": "legal_name",
+      "label": "What is the exact legal name on your Seller Central account?",
+      "type": "text",
+      "why": "Every document must match this string character for character.",
+      "required": true
+    },
+    {
+      "id": "registered_address",
+      "label": "What is the exact registered address on the account?",
+      "type": "text",
+      "why": "Address mismatches across documents are the commonest cause of a second rejection.",
+      "required": true
+    },
+    {
+      "id": "doc_age",
+      "label": "How old are the utility bill and bank statement you are sending?",
+      "type": "text",
+      "why": "Amazon usually requires documents dated within the last 90 or 180 days.",
+      "required": true
+    },
+    {
+      "id": "entity_change",
+      "label": "Has your business name, address or structure changed recently?",
+      "type": "longtext",
+      "why": "If it has, the account details need updating before the documents will ever match.",
+      "required": true
+    },
+    {
+      "id": "beneficial_owners",
+      "label": "Who are the beneficial owners and does the account list all of them?",
+      "type": "longtext",
+      "why": "A missing beneficial owner fails verification regardless of the documents.",
+      "required": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "notice",
+      "label": "The verification notice",
+      "why": "We build the document checklist from Amazon's own wording.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg",
+        "txt"
+      ]
+    },
+    {
+      "id": "business_registration",
+      "label": "Business registration document",
+      "why": "Must show the exact legal name and address on the account.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "utility_bill",
+      "label": "Utility bill or bank statement dated in the last 90 days",
+      "why": "Address proof. Older documents are rejected without review.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "id_document",
+      "label": "Photo ID for the primary contact and each beneficial owner",
+      "why": "Must be unexpired and legible in full colour.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "bank_statement",
+      "label": "Bank statement showing the account name and the deposit account",
+      "why": "The bank account name must match the legal entity.",
+      "required": false,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    }
+  ],
+  "output": {
+    "sections": [
+      {
+        "heading": "Document pack index",
+        "guidance": "A numbered list of the attached documents, each with what it evidences and the name and address exactly as they appear on it."
+      },
+      {
+        "heading": "Cover message",
+        "guidance": "Short. Names the account, the notice date, what was wrong last time and how each document resolves it."
+      },
+      {
+        "heading": "Consistency note",
+        "guidance": "One short paragraph reconciling any difference in name or address across documents, for example a trading name against a registered name."
+      }
+    ],
+    "opening": "One sentence naming the seller account and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    {
+      "id": "name_mismatch",
+      "severity": "blocking",
+      "check": "The name on every confirmed document matches the account legal name, or the difference is reconciled in the consistency note.",
+      "fail_message": "A name on one of your documents does not match the account. This fails verification on its own."
+    },
+    {
+      "id": "address_mismatch",
+      "severity": "blocking",
+      "check": "The address on every confirmed document matches the registered address, or the difference is reconciled.",
+      "fail_message": "An address on one of your documents does not match the account."
+    },
+    {
+      "id": "document_too_old",
+      "severity": "blocking",
+      "check": "No address proof is dated more than 90 days before the notice.",
+      "fail_message": "This document is older than 90 days and will be rejected without review."
+    },
+    {
+      "id": "missing_requested_doc",
+      "severity": "blocking",
+      "check": "Every document named in the notice is present in the confirmed evidence.",
+      "fail_message": "A document Amazon asked for has not been uploaded."
+    },
+    {
+      "id": "missing_markers",
+      "severity": "blocking",
+      "check": "No [MISSING: ...] markers remain in the draft.",
+      "fail_message": "A required fact is missing. Answer the question or upload the document."
+    },
+    {
+      "id": "banned_phrases",
+      "severity": "blocking",
+      "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.",
+      "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it."
+    },
+    {
+      "id": "generic_paragraph",
+      "severity": "blocking",
+      "check": "No paragraph scores above 0.6 for genericity.",
+      "fail_message": "This paragraph could belong to any seller. A cover message that names nothing specific adds nothing."
+    },
+    {
+      "id": "owners_incomplete",
+      "severity": "advisory",
+      "check": "All beneficial owners are listed on the account.",
+      "fail_message": "A missing beneficial owner fails verification regardless of the documents."
+    },
+    {
+      "id": "unreadable_scan",
+      "severity": "advisory",
+      "check": "No confirmed document was flagged as unreadable or handwritten during extraction.",
+      "fail_message": "One of your scans was hard to read. Rescan it in colour at full page size."
+    }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, the verification banner or Performance Notifications",
+    "steps": [
+      "Open the verification task in Seller Central from the banner or the performance notification.",
+      "Upload each document in the order of the index, as full colour scans or photographs of the whole page.",
+      "Paste the cover message into the message box.",
+      "Do not upload cropped screenshots or documents with fields blacked out."
+    ],
+    "turnaround": "Amazon usually responds to a verification resubmission within 2 to 3 business days."
+  },
+  "limits": {
+    "target_words_min": 150,
+    "target_words_max": 400,
+    "max_attachments": 15
+  }
+}

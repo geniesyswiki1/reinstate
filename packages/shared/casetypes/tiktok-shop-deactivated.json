@@ -1,0 +1,54 @@
+{
+  "id": "tiktok-shop-deactivated",
+  "platform": "tiktok-shop",
+  "tier": "marketplace",
+  "name": "Shop deactivation for accumulated violation points",
+  "distinguishing_phrases": ["violation points", "shop deactivated", "TikTok Shop Seller Code of Conduct", "accumulated", "permanent closure", "appeal window", "governance"],
+  "intake": [
+    { "id": "notice_date", "label": "What date was the shop deactivated?", "type": "date", "why": "The appeal window on TikTok Shop is short. The date sets the clock.", "required": true },
+    { "id": "shop_name", "label": "What is your shop name and seller ID?", "type": "text", "why": "TikTok matches appeals by seller ID.", "required": true },
+    { "id": "violations_list", "label": "List every violation showing in your account health, with its date and points.", "type": "longtext", "why": "This appeal is a point-by-point response. Each violation needs its own answer and its own corrective action.", "required": true },
+    { "id": "disputed", "label": "Which of those violations do you believe are wrong, and why?", "type": "longtext", "why": "Some points can be removed. Disputed points need evidence, not assertion.", "required": true },
+    { "id": "accepted", "label": "Which violations do you accept?", "type": "longtext", "why": "Accepting what is true and correcting it is what makes the disputed ones credible.", "required": true },
+    { "id": "listings_fixed", "label": "What have you already fixed in the listings or operations, and on what dates?", "type": "longtext", "why": "Corrective actions carry dates.", "required": true },
+    { "id": "fulfilment", "label": "If any points are for late dispatch or cancellation, what changed in fulfilment?", "type": "longtext", "why": "Operational points need an operational answer.", "required": true },
+    { "id": "staff", "label": "Who manages the shop day to day, and who now checks listings before they publish?", "type": "text", "why": "Preventive measures need a named owner.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The deactivation notice", "why": "We quote the violation list and the date exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "violation_screenshots", "label": "Screenshots of your account health violation list", "why": "The appeal is built from this list, point by point.", "required": true, "accepts": ["png", "jpg", "pdf"] },
+    { "id": "dispute_evidence", "label": "Evidence for each disputed violation (tracking, product certificates, order records)", "why": "A dispute with no evidence is not read as a dispute.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "product_certificates", "label": "Product compliance certificates where a listing was flagged", "why": "Resolves product-based points directly.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Point-by-point response", "guidance": "One numbered entry per violation: what it was, whether it is accepted or disputed, the evidence for a dispute, and the dated corrective action taken." },
+      { "heading": "Root cause", "guidance": "What in the operation allowed these violations to accumulate." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets naming the owner, the pre-publication listing check and the fulfilment monitoring cadence." }
+    ],
+    "opening": "One sentence naming the shop, the seller ID and the deactivation date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "not_point_by_point", "severity": "blocking", "check": "Every violation in the list has its own entry.", "fail_message": "TikTok reviews violation by violation. An appeal that answers them collectively is rejected." },
+    { "id": "dispute_without_evidence", "severity": "blocking", "check": "Every disputed violation has a confirmed piece of evidence behind it.", "fail_message": "A disputed violation with no evidence attached will stand." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any shop." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "disputes_everything", "severity": "advisory", "check": "The appeal accepts at least the violations the seller said were accurate.", "fail_message": "Disputing every point weakens the ones that are genuinely wrong." },
+    { "id": "no_owner", "severity": "advisory", "check": "The preventive measures name who checks listings before publication.", "fail_message": "A preventive measure with no owner cannot be verified." }
+  ],
+  "submission": {
+    "where": "TikTok Shop Seller Center, Account Health, Appeal",
+    "steps": [
+      "Open Seller Center and go to Account Health.",
+      "Open the deactivation record and start the appeal within the stated window.",
+      "Paste the point-by-point response into the appeal box.",
+      "Upload the evidence for each disputed violation, named so the reviewer can match it to the point."
+    ],
+    "turnaround": "TikTok Shop usually responds within 3 to 7 days. The appeal window is often 7 to 14 days from deactivation, so do not miss it."
+  },
+  "limits": { "target_words_min": 250, "target_words_max": 600, "max_attachments": 10 }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "amazon-ip-complaint",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Intellectual property complaint (trademark, copyright, patent), account or ASIN level",
+  "distinguishing_phrases": ["intellectual property", "trademark infringement", "copyright infringement", "patent", "rights owner", "complaint ID", "notice of infringement", "retraction"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The appeal opens by naming the ASINs, the complaint ID and the notice date.", "required": true },
+    { "id": "complaint_id", "label": "What is the complaint ID in the notice?", "type": "text", "why": "Amazon cannot match a retraction to your account without it.", "required": true },
+    { "id": "rights_owner", "label": "Who is the rights owner named in the complaint?", "type": "text", "why": "The retraction has to come from them, to Amazon, quoting the complaint ID.", "required": true },
+    { "id": "ip_type", "label": "What kind of right is it?", "type": "choice", "options": ["Trademark", "Copyright", "Patent", "Not stated"], "why": "Each has a different defence. A trademark claim on a genuine product is often exhaustion or first sale; a copyright claim is usually about images or text you can simply change.", "required": true },
+    { "id": "asins", "label": "Which ASINs are affected?", "type": "longtext", "why": "The appeal addresses each ASIN in the complaint.", "required": true },
+    { "id": "path", "label": "Which path fits your situation?", "type": "choice", "options": ["The rights owner will retract, or I can ask them", "I have authorisation to sell this brand", "The listing was mine and in error, I have removed it", "The product is genuine and I have the supply chain"], "why": "There are only these routes back. We draft the one your answers support, not all four.", "required": true },
+    { "id": "authorisation_detail", "label": "If you have authorisation, who issued it and when?", "type": "text", "why": "An authorisation letter that does not name your business or is undated will not be accepted.", "required": false, "showIf": { "question_id": "path", "equals": "I have authorisation to sell this brand" } },
+    { "id": "listing_issue", "label": "If the listing was in error, what exactly was wrong with it? (image, brand name in title, description text)", "type": "longtext", "why": "The corrective action has to name the element that infringed and the date you fixed it.", "required": false, "showIf": { "question_id": "path", "equals": "The listing was mine and in error, I have removed it" } },
+    { "id": "contact_attempted", "label": "Have you contacted the rights owner? What happened?", "type": "longtext", "why": "Amazon expects you to try. A retraction ends the case faster than any appeal.", "required": true },
+    { "id": "preventive_owner", "label": "Who now checks brand and image rights before a listing goes live?", "type": "text", "why": "Preventive measures need an owner and a cadence.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The infringement notice", "why": "We quote the complaint ID, rights owner and ASINs exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "retraction", "label": "Retraction email from the rights owner, if you have one", "why": "The fastest route back. Must quote the complaint ID and be sent to Amazon by the rights owner.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "authorisation", "label": "Authorisation or distributor letter naming your business", "why": "Evidences the right to sell the brand.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "invoices", "label": "Supplier invoices for the affected ASINs", "why": "Supports the genuine goods path.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "correspondence", "label": "Your correspondence with the rights owner", "why": "Shows Amazon you attempted resolution at source.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Root cause", "guidance": "State why the complaint arose: an image used without licence, a brand name in the title, stock sourced outside the authorised chain, or a complaint the seller believes is mistaken with the evidence that supports that." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets: listing removed or amended on a date, rights owner contacted on a date, retraction requested, stock quarantined." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets naming the owner and the pre-listing rights check." }
+    ],
+    "opening": "One sentence naming the complaint ID, the rights owner, the ASINs and the notice date.",
+    "closing": "One line listing the attachments by filename. Where the retraction path is chosen, a separate retraction request email to the rights owner is produced alongside the appeal.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "complaint_id_missing", "severity": "blocking", "check": "The complaint ID appears in the appeal.", "fail_message": "Without the complaint ID Amazon cannot match your appeal to the notice." },
+    { "id": "authorisation_claimed_without_doc", "severity": "blocking", "check": "The appeal does not claim authorisation unless an authorisation document is in the confirmed evidence.", "fail_message": "The appeal claims authorisation to sell the brand but no authorisation letter has been uploaded." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. Rights teams reject template language." },
+    { "id": "argues_law", "severity": "blocking", "check": "The appeal does not argue trademark law at Amazon. It states facts and attaches documents.", "fail_message": "Amazon does not adjudicate infringement. Legal argument here delays the case; a retraction or an authorisation resolves it." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "no_rights_owner_contact", "severity": "advisory", "check": "The appeal says whether the rights owner has been contacted.", "fail_message": "The appeal does not say whether you approached the rights owner." },
+    { "id": "too_long", "severity": "advisory", "check": "Under 600 words.", "fail_message": "Over 600 words. Reviewers skim; the extra length dilutes the specifics." }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, Intellectual Property Complaints, or Reactivate your account for an account-level deactivation",
+    "steps": [
+      "Open Seller Central and go to Performance, then Account Health.",
+      "Open the Intellectual Property Complaints tab and find the complaint ID.",
+      "Paste the appeal into the appeal box for that complaint.",
+      "Where a retraction is the chosen path, send the retraction request email to the rights owner first and ask them to email Amazon quoting the complaint ID.",
+      "Attach the authorisation letter or invoices as separate files."
+    ],
+    "turnaround": "Amazon's stated turnaround is 3 to 5 business days. A retraction from the rights owner is usually actioned faster."
+  },
+  "limits": { "target_words_min": 300, "target_words_max": 600, "max_attachments": 10 }
+}

@@ -1,0 +1,61 @@
+{
+  "id": "stripe-account-review",
+  "platform": "stripe",
+  "tier": "payments",
+  "name": "Stripe or Shopify Payments account review, hold or termination",
+  "distinguishing_phrases": ["account review", "payouts have been paused", "restricted business", "we are unable to continue supporting", "reserve", "Stripe Services Agreement", "Shopify Payments hold", "risk review"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The cover message names the account and the date.", "required": true },
+    { "id": "provider", "label": "Which provider is it?", "type": "choice", "options": ["Stripe", "Shopify Payments"], "why": "The submission path and the wording differ, though the risk questions are the same.", "required": true },
+    { "id": "action_taken", "label": "What has the provider actually done?", "type": "choice", "options": ["Paused payouts pending review", "Requested documents", "Applied a reserve", "Terminated the account"], "why": "A review is answerable with documents. A termination is about releasing the balance and getting a clean reference.", "required": true },
+    { "id": "reason_given", "label": "What reason does the notice give?", "type": "longtext", "why": "Restricted business, chargeback rate and sudden volume change lead to three different letters.", "required": true },
+    { "id": "business_model", "label": "Describe the business: what you sell, to whom, delivery method, typical order value and fulfilment time.", "type": "longtext", "why": "This is the first thing the risk team reads and the commonest reason a review resolves quickly.", "required": true },
+    { "id": "chargeback_rate", "label": "What is your current dispute rate and how many disputes in the last 90 days?", "type": "text", "why": "Real numbers with handling detail beat assurances.", "required": true },
+    { "id": "volume_change", "label": "Has volume, order value or product mix changed recently? By how much?", "type": "longtext", "why": "A spike is usually the trigger. Explaining it with a cause, such as a campaign, closes the question.", "required": true },
+    { "id": "restricted_check", "label": "Does anything you sell appear on the provider's restricted businesses list?", "type": "longtext", "why": "If it does, no letter helps. We say so rather than drafting an appeal that cannot work.", "required": true },
+    { "id": "policies_published", "label": "Where are your refund, shipping and terms pages published?", "type": "text", "why": "The risk team checks the live site. Missing pages are a common, easily fixed cause.", "required": true },
+    { "id": "preventive_owner", "label": "Who now monitors disputes and at what threshold do they act?", "type": "text", "why": "Preventive measures need an owner and a trigger.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The review or termination notice", "why": "We quote the reason and the date exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "fulfilment_proof", "label": "Tracking or delivery confirmations for recent orders", "why": "The strongest evidence that the payments represent delivered goods.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "supplier_invoices", "label": "Supplier invoices or proof of stock", "why": "Evidences fulfilment capacity behind the held balance.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "policies", "label": "Screenshots of your published refund, shipping and terms pages", "why": "Shows the customer-facing commitments the risk team looks for.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "dispute_records", "label": "Dispute records and your responses", "why": "Shows disputes are handled rather than ignored.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "business_registration", "label": "Business registration and ID for the account owner", "why": "Standard verification request.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Document pack index", "guidance": "Numbered list of attachments, each with the filename and what it evidences, in the order the risk team reads them." },
+      { "heading": "Cover message", "guidance": "Short. The business, what is sold, to whom, delivery method, typical order value and fulfilment time." },
+      { "heading": "Disputes and refunds", "guidance": "Real dispute numbers, how they are handled, the published refund policy with its URL." },
+      { "heading": "What changed and what has been done", "guidance": "Dated bullets explaining any volume change and the corrective actions already taken." },
+      { "heading": "Requested outcome", "guidance": "One or two sentences: resume payouts, or on a termination, confirm the release date for the balance and the destination account." }
+    ],
+    "opening": "One sentence naming the account, the provider, the notice date and what is being asked for.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "restricted_business", "severity": "blocking", "check": "The product is not on the provider's restricted businesses list.", "fail_message": "If what you sell is on the restricted list, a letter cannot change that. The realistic goal is releasing the balance and moving processor." },
+    { "id": "no_fulfilment_evidence", "severity": "blocking", "check": "Tracking or delivery confirmation is in the confirmed evidence.", "fail_message": "Without delivery evidence the risk team has no reason to resume payouts." },
+    { "id": "policies_not_published", "severity": "blocking", "check": "Refund, shipping and terms pages are published and their URLs are in the message.", "fail_message": "Missing published policy pages is one of the easiest causes to fix and one of the commonest." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any business. The risk team is reading for specifics about yours." },
+    { "id": "argues_entitlement", "severity": "blocking", "check": "The message does not argue that the provider has no right to hold funds.", "fail_message": "Arguing entitlement does not move a risk review. Evidence of fulfilment does." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "volume_unexplained", "severity": "advisory", "check": "Any recent volume change is explained with a cause.", "fail_message": "An unexplained volume spike is usually the trigger for the review." },
+    { "id": "disputes_vague", "severity": "advisory", "check": "Dispute numbers are stated with how they were handled.", "fail_message": "Vague dispute answers invite a longer review. Give the numbers." }
+  ],
+  "submission": {
+    "where": "Stripe Dashboard support, or Shopify Payments through Shopify support",
+    "steps": [
+      "On Stripe, reply to the review email or open a support case from the Dashboard and attach the pack.",
+      "On Shopify Payments, open Settings, Payments, and contact Shopify support with the case reference in the hold notice.",
+      "Upload each document named in the index, using the filenames from the index.",
+      "Send once and wait for the reviewer's reply before adding more."
+    ],
+    "turnaround": "Stripe usually replies within 2 to 5 business days. A terminated account's balance is typically released after a holding period stated in the notice."
+  },
+  "limits": { "target_words_min": 200, "target_words_max": 550, "max_attachments": 15 }
+}

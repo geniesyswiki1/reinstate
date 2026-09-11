@@ -1,0 +1,56 @@
+{
+  "id": "etsy-shop-suspended",
+  "platform": "etsy",
+  "tier": "marketplace",
+  "name": "Shop suspension, unspecified violation of policies",
+  "distinguishing_phrases": ["your shop has been suspended", "violation of our policies", "Etsy's Seller Policy", "House Rules", "we are unable to share further details", "permanently suspended"],
+  "intake": [
+    { "id": "notice_date", "label": "What date did Etsy suspend the shop?", "type": "date", "why": "The appeal opens with the shop name and the date.", "required": true },
+    { "id": "shop_name", "label": "What is your shop name?", "type": "text", "why": "Etsy matches appeals by shop name.", "required": true },
+    { "id": "what_you_sell", "label": "What does your shop sell, in one or two sentences?", "type": "longtext", "why": "Etsy's appeal is short. The first thing the reviewer needs is what the shop actually is.", "required": true },
+    { "id": "policy_guess", "label": "Which policy do you think this relates to, and why?", "type": "longtext", "why": "Etsy rarely says. An appeal that engages with a specific policy beats one that asks what happened.", "required": true },
+    { "id": "recent_changes", "label": "What changed in the shop in the two weeks before the suspension? (new listings, new supplier, bulk edits, a spike in orders, a new device or location)", "type": "longtext", "why": "Most unspecified suspensions trace to one recent change. Finding it is the appeal.", "required": true },
+    { "id": "other_accounts", "label": "Do you or anyone in your household have another Etsy shop?", "type": "boolean", "why": "Linked accounts are a frequent, unstated cause.", "required": true },
+    { "id": "payment_changes", "label": "Have your bank details, address or identity documents changed recently?", "type": "longtext", "why": "Payment and identity mismatches trigger automatic suspensions that read as policy violations.", "required": true },
+    { "id": "production_partners", "label": "Do you use production partners, and are they declared on your listings?", "type": "longtext", "why": "Undeclared production partners are one of the commonest true causes.", "required": true },
+    { "id": "changes_made", "label": "What have you already corrected, and on what dates?", "type": "longtext", "why": "Corrective actions carry dates on Etsy too.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The suspension email", "why": "We quote Etsy's wording exactly and check whether a policy is actually named.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "listing_screenshots", "label": "Screenshots of your main listings", "why": "Lets the appeal describe the shop concretely.", "required": false, "accepts": ["png", "jpg", "pdf"] },
+    { "id": "supplier_docs", "label": "Supplier or materials invoices, if you buy components", "why": "Supports the handmade or sourcing part of the appeal.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "id_documents", "label": "Identity or bank verification documents, if Etsy asked for them", "why": "Where the cause is verification, documents end the case faster than an appeal.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "What the shop sells", "guidance": "Two or three sentences: the products, the materials, how they are made, how long the shop has traded." },
+      { "heading": "How the shop complies", "guidance": "Address the policy you believe is at issue, point by point, with specifics from the shop." },
+      { "heading": "What has changed", "guidance": "Dated bullets of what has already been corrected." },
+      { "heading": "Evidence attached", "guidance": "One line naming each attachment and what it shows." }
+    ],
+    "opening": "One sentence naming the shop and the suspension date, and asking Etsy to state the policy at issue if it is not named.",
+    "closing": "One short line offering any further document Etsy needs.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "over_limit", "severity": "blocking", "check": "Under 2000 characters.", "fail_message": "Etsy's appeal box takes 2000 characters. Anything longer is cut off mid sentence." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any shop. Etsy Trust and Safety reads hundreds of these a day." },
+    { "id": "asks_what_happened", "severity": "blocking", "check": "The appeal engages with a specific policy rather than only asking Etsy what the violation was.", "fail_message": "An appeal that only asks what happened gets the standard reply. Name the policy you think applies and address it." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question rather than letting the draft generalise." },
+    { "id": "no_dates", "severity": "blocking", "check": "Corrective actions carry dates.", "fail_message": "A correction with no date reads as a promise, not an action taken." },
+    { "id": "linked_shop_unmentioned", "severity": "advisory", "check": "Where another shop exists in the household, the appeal declares it.", "fail_message": "An undeclared second shop is usually found. Declaring it first is better." },
+    { "id": "production_partners_unmentioned", "severity": "advisory", "check": "Where production partners are used, the appeal says whether they are declared.", "fail_message": "Undeclared production partners are a common cause of unspecified suspensions." }
+  ],
+  "submission": {
+    "where": "The appeal link in Etsy's suspension email, or Etsy Support, Contact us",
+    "steps": [
+      "Open the suspension email and use the appeal link it contains.",
+      "Paste the appeal as plain text. It must fit in 2000 characters.",
+      "Attach the evidence where the form allows attachments; otherwise offer it in the text and send on request.",
+      "Send once and wait. Repeated appeals slow the queue."
+    ],
+    "turnaround": "Etsy typically replies within 3 to 7 days."
+  },
+  "limits": { "max_chars": 2000, "target_words_min": 180, "target_words_max": 320, "max_attachments": 5 }
+}

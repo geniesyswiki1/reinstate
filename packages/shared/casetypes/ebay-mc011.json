@@ -1,0 +1,240 @@
+{
+  "id": "ebay-mc011",
+  "platform": "ebay",
+  "tier": "marketplace",
+  "name": "MC011 business verification restriction",
+  "distinguishing_phrases": [
+    "MC011",
+    "business verification",
+    "regulatory requirements",
+    "verify your business",
+    "restricted from selling",
+    "documents to verify",
+    "beneficial owner"
+  ],
+  "intake": [
+    {
+      "id": "notice_date",
+      "label": "What date is on the MC011 notice?",
+      "type": "date",
+      "why": "The cover message names the account and the date.",
+      "required": true
+    },
+    {
+      "id": "username",
+      "label": "What is your eBay username?",
+      "type": "text",
+      "why": "eBay matches documents to the username.",
+      "required": true
+    },
+    {
+      "id": "documents_requested",
+      "label": "Exactly which documents does the notice ask for?",
+      "type": "longtext",
+      "why": "MC011 is a documents case, not an argument case. The checklist comes from eBay's own wording.",
+      "required": true
+    },
+    {
+      "id": "account_type",
+      "label": "Is the account registered as an individual or a business?",
+      "type": "choice",
+      "options": [
+        "Individual",
+        "Sole trader",
+        "Limited company",
+        "Partnership"
+      ],
+      "why": "The document set is different for each and a mismatch between registration and documents is the commonest failure.",
+      "required": true
+    },
+    {
+      "id": "legal_name",
+      "label": "What is the exact legal name registered on the account?",
+      "type": "text",
+      "why": "Every document must match this string character for character.",
+      "required": true
+    },
+    {
+      "id": "registered_address",
+      "label": "What is the exact registered address on the account?",
+      "type": "text",
+      "why": "Address mismatches across documents are the commonest cause of a second rejection.",
+      "required": true
+    },
+    {
+      "id": "previous_rejection",
+      "label": "If you have already sent documents, what did eBay say was wrong?",
+      "type": "longtext",
+      "why": "A resubmission that does not fix the stated reason gets the same answer.",
+      "required": false
+    },
+    {
+      "id": "beneficial_owners",
+      "label": "Who are the beneficial owners, and does the account list them all?",
+      "type": "longtext",
+      "why": "A missing beneficial owner fails verification regardless of the documents.",
+      "required": true
+    },
+    {
+      "id": "bank_name_match",
+      "label": "Does the name on your payout bank account match the legal name exactly?",
+      "type": "boolean",
+      "why": "A bank account in a different name stops the payout release even after verification passes.",
+      "required": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "notice",
+      "label": "The MC011 notice",
+      "why": "We build the checklist from eBay's own wording.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg",
+        "txt"
+      ]
+    },
+    {
+      "id": "business_registration",
+      "label": "Business registration or Companies House document",
+      "why": "Must show the exact legal name and address on the account.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "id_document",
+      "label": "Photo ID for each beneficial owner",
+      "why": "Unexpired, full colour, whole document in frame.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "address_proof",
+      "label": "Utility bill or bank statement dated in the last 90 days",
+      "why": "Older documents are rejected without review.",
+      "required": true,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    },
+    {
+      "id": "bank_statement",
+      "label": "Bank statement header showing the account name and number",
+      "why": "Evidences the payout account belongs to the registered entity.",
+      "required": false,
+      "accepts": [
+        "pdf",
+        "png",
+        "jpg"
+      ]
+    }
+  ],
+  "output": {
+    "sections": [
+      {
+        "heading": "Document pack index",
+        "guidance": "Numbered list of attachments, each with what it evidences and the name and address exactly as they appear on it."
+      },
+      {
+        "heading": "Cover message",
+        "guidance": "Short. Names the username, the MC011 date, what was rejected previously and how each document resolves it."
+      },
+      {
+        "heading": "Consistency note",
+        "guidance": "One paragraph reconciling any difference in name or address across documents."
+      }
+    ],
+    "opening": "One sentence naming the eBay username and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    {
+      "id": "name_mismatch",
+      "severity": "blocking",
+      "check": "The name on every confirmed document matches the registered legal name, or the difference is reconciled.",
+      "fail_message": "A name on one of your documents does not match the account. MC011 fails on this alone."
+    },
+    {
+      "id": "address_mismatch",
+      "severity": "blocking",
+      "check": "The address on every confirmed document matches the registered address, or the difference is reconciled.",
+      "fail_message": "An address on one of your documents does not match the account."
+    },
+    {
+      "id": "document_too_old",
+      "severity": "blocking",
+      "check": "No address proof is dated more than 90 days before the notice.",
+      "fail_message": "This document is older than 90 days and will be rejected without review."
+    },
+    {
+      "id": "missing_requested_doc",
+      "severity": "blocking",
+      "check": "Every document named in the notice is present in the confirmed evidence.",
+      "fail_message": "A document eBay asked for has not been uploaded."
+    },
+    {
+      "id": "account_type_mismatch",
+      "severity": "blocking",
+      "check": "The documents match the account registration type.",
+      "fail_message": "You have sent company documents for an account registered to an individual, or the reverse."
+    },
+    {
+      "id": "missing_markers",
+      "severity": "blocking",
+      "check": "No [MISSING: ...] markers remain in the draft.",
+      "fail_message": "A required fact is missing. Answer the question or upload the document."
+    },
+    {
+      "id": "banned_phrases",
+      "severity": "blocking",
+      "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.",
+      "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it."
+    },
+    {
+      "id": "generic_paragraph",
+      "severity": "blocking",
+      "check": "No paragraph scores above 0.6 for genericity.",
+      "fail_message": "This paragraph could belong to any seller. A cover message that names nothing specific adds nothing."
+    },
+    {
+      "id": "owners_incomplete",
+      "severity": "advisory",
+      "check": "All beneficial owners are covered by an ID document.",
+      "fail_message": "A missing beneficial owner fails verification regardless of the other documents."
+    },
+    {
+      "id": "unreadable_scan",
+      "severity": "advisory",
+      "check": "No confirmed document was flagged unreadable or cropped during extraction.",
+      "fail_message": "One of your scans was cropped or hard to read. Rescan the whole page in colour."
+    }
+  ],
+  "submission": {
+    "where": "The verification link in the MC011 email, or Seller Hub, Account, Verification",
+    "steps": [
+      "Open the MC011 email and use the verification link it contains.",
+      "Upload each document as a full colour scan or photograph of the whole page.",
+      "Paste the cover message where the form allows a note.",
+      "Do not crop, redact or screenshot the documents."
+    ],
+    "turnaround": "eBay usually reviews verification documents within 2 to 5 business days. Payout release can take a further few days after the restriction lifts."
+  },
+  "limits": {
+    "target_words_min": 150,
+    "target_words_max": 400,
+    "max_attachments": 15
+  }
+}

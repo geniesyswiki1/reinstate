@@ -1,0 +1,56 @@
+{
+  "id": "ebay-below-standard",
+  "platform": "ebay",
+  "tier": "marketplace",
+  "name": "Seller performance below standard restriction",
+  "distinguishing_phrases": ["Below Standard", "seller level", "transaction defect rate", "cases closed without seller resolution", "late shipment rate", "selling limits have been lowered", "evaluation"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The appeal opens by naming the account, the metric and the date.", "required": true },
+    { "id": "username", "label": "What is your eBay username?", "type": "text", "why": "eBay matches appeals by username.", "required": true },
+    { "id": "metric", "label": "Which metric put you below standard and what is the figure?", "type": "text", "why": "This appeal is about one number.", "required": true },
+    { "id": "period", "label": "Which evaluation period does it cover?", "type": "text", "why": "You must explain the defects in that window.", "required": true },
+    { "id": "defect_detail", "label": "Go through the defective transactions. What happened in each?", "type": "longtext", "why": "eBay appeals succeed on transaction-level specificity. Some defects can be removed outright when the cause was a buyer or carrier issue.", "required": true },
+    { "id": "removable_defects", "label": "Were any defects caused by a buyer demand that breaks policy, a carrier delay with tracking proof, or an eBay site issue?", "type": "longtext", "why": "These are the categories eBay will remove. Identifying them is often worth more than the appeal itself.", "required": true },
+    { "id": "changes_made", "label": "What have you already changed, and on what dates?", "type": "longtext", "why": "Corrective actions carry dates.", "required": true },
+    { "id": "current_figures", "label": "What are your figures now?", "type": "text", "why": "Recent improvement is the most persuasive fact.", "required": true },
+    { "id": "preventive_owner", "label": "Who now watches the dashboard, how often, and at what threshold do they act?", "type": "text", "why": "Preventive measures need an owner, a cadence and a trigger.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The Below Standard notice", "why": "We quote the metric and the period exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "dashboard", "label": "Your Seller Dashboard showing the defects and current figures", "why": "Identifies each defective transaction by number.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "tracking_proof", "label": "Tracking records for the late or disputed shipments", "why": "Carrier scans are what get a late shipment defect removed.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "messages", "label": "Buyer messages for any defect caused by a policy-breaking demand", "why": "Evidences a removable defect.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "The transactions", "guidance": "Go defect by defect with the transaction number, what happened, and whether removal is being requested under a named eBay defect removal ground." },
+      { "heading": "Root cause", "guidance": "What in the operation caused the remaining defects." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets tied to the causes above, with current figures." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets naming the owner, the dashboard check cadence and the threshold that triggers action." }
+    ],
+    "opening": "One sentence naming the username, the metric, the evaluation period and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "no_transaction_detail", "severity": "blocking", "check": "Each defect is addressed by transaction number.", "fail_message": "The appeal discusses the defects in general. eBay works from transaction numbers." },
+    { "id": "removal_without_ground", "severity": "blocking", "check": "Any defect removal request names the eBay ground it falls under and attaches the proof.", "fail_message": "A defect removal request with no named ground and no proof will be declined." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "no_current_figure", "severity": "advisory", "check": "The appeal states the current figures.", "fail_message": "The appeal does not state where the metric stands now." },
+    { "id": "no_threshold", "severity": "advisory", "check": "The preventive measures name a threshold that triggers action.", "fail_message": "Monitoring with no threshold and no action is not a preventive measure." }
+  ],
+  "submission": {
+    "where": "Seller Hub, Performance, Seller level, or eBay Customer Service with the notice reference",
+    "steps": [
+      "Open Seller Hub and go to Performance, then Seller level.",
+      "Request removal of each qualifying defect through the defect removal route first.",
+      "Then contact eBay seller support with the appeal text and the transaction numbers.",
+      "Attach tracking records and buyer messages for each removal request."
+    ],
+    "turnaround": "eBay usually responds within 2 to 5 business days. Seller level is re-evaluated on the 20th of each month."
+  },
+  "limits": { "target_words_min": 250, "target_words_max": 600, "max_attachments": 10 }
+}

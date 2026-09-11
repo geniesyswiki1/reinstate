@@ -1,0 +1,56 @@
+{
+  "id": "etsy-ip",
+  "platform": "etsy",
+  "tier": "marketplace",
+  "name": "Shop suspension, intellectual property",
+  "distinguishing_phrases": ["intellectual property", "infringement report", "takedown", "reported by the rights owner", "counter notice", "DMCA", "trademark holder"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The appeal opens with the shop name and the date.", "required": true },
+    { "id": "shop_name", "label": "What is your shop name?", "type": "text", "why": "Etsy matches appeals by shop name.", "required": true },
+    { "id": "reporter", "label": "Who reported the infringement?", "type": "text", "why": "On Etsy the fastest resolution is a retraction from the reporter.", "required": true },
+    { "id": "listings", "label": "Which listings were removed?", "type": "longtext", "why": "The appeal addresses each listing.", "required": true },
+    { "id": "ip_type", "label": "What kind of right is claimed?", "type": "choice", "options": ["Trademark", "Copyright", "Design or pattern", "Not stated"], "why": "Copyright claims about images or artwork are resolved differently from trademark claims about a brand name.", "required": true },
+    { "id": "source_of_design", "label": "Where did the design, artwork or wording come from?", "type": "longtext", "why": "A licence, a commission or your own original work is the whole case. Downloaded from the internet is not defensible.", "required": true },
+    { "id": "licence_held", "label": "Do you hold a licence or commercial use right?", "type": "choice", "options": ["Yes, and I have the document", "Yes, but I cannot find the document", "No"], "why": "A commercial use licence that does not cover resale of physical goods is a common trap.", "required": true },
+    { "id": "listings_removed", "label": "Have you removed the affected listings, and on what date?", "type": "text", "why": "Removal is the first corrective action and it needs a date.", "required": true },
+    { "id": "contact_attempted", "label": "Have you contacted the rights owner?", "type": "longtext", "why": "A retraction resolves the case faster than any appeal.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The infringement notice from Etsy", "why": "We quote the reporter and the listings exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "licence", "label": "Your licence or commercial use document", "why": "Must cover the use you made of it, on physical goods, for sale.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "original_work", "label": "Your original design files, dated", "why": "Evidences that the work is yours.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "retraction", "label": "Retraction from the rights owner, if you have one", "why": "The fastest route back.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "The listings and the report", "guidance": "Name the listings and the reporter, and state which path you are taking: retraction, licence, or removal in error." },
+      { "heading": "Why the listings are compliant or have been removed", "guidance": "Address the right claimed with the document that answers it. Where there is no answer, say the listings are removed and will not return." },
+      { "heading": "What has changed", "guidance": "Dated bullets: listings removed, designs replaced, licences checked." },
+      { "heading": "Evidence attached", "guidance": "One line naming each attachment and what it shows." }
+    ],
+    "opening": "One sentence naming the shop, the reporter and the notice date.",
+    "closing": "One short line offering any further document Etsy needs.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "over_limit", "severity": "blocking", "check": "Under 2000 characters.", "fail_message": "Etsy's appeal box takes 2000 characters. Anything longer is cut off mid sentence." },
+    { "id": "licence_claimed_without_doc", "severity": "blocking", "check": "The appeal does not claim a licence unless the licence document is in the confirmed evidence.", "fail_message": "The appeal claims a licence but no licence document has been uploaded." },
+    { "id": "argues_law", "severity": "blocking", "check": "The appeal states facts and attaches documents rather than arguing infringement law.", "fail_message": "Etsy does not adjudicate infringement. A retraction or a licence resolves this; legal argument does not." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any shop. Etsy Trust and Safety reads hundreds of these a day." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "no_removal_date", "severity": "advisory", "check": "The appeal states the date the listings were removed.", "fail_message": "The appeal does not say when the listings came down." },
+    { "id": "no_reporter_contact", "severity": "advisory", "check": "The appeal says whether the rights owner has been contacted.", "fail_message": "The appeal does not say whether you approached the reporter for a retraction." }
+  ],
+  "submission": {
+    "where": "The appeal link in Etsy's notice, or Etsy Support, Contact us, Intellectual property",
+    "steps": [
+      "Open the notice and use the appeal or counter notice link it contains.",
+      "Paste the appeal as plain text within 2000 characters.",
+      "Attach the licence or original design files.",
+      "Where a retraction is possible, email the reporter first and ask them to notify Etsy directly."
+    ],
+    "turnaround": "Etsy typically replies within 3 to 7 days. A retraction is usually actioned faster."
+  },
+  "limits": { "max_chars": 2000, "target_words_min": 160, "target_words_max": 320, "max_attachments": 6 }
+}

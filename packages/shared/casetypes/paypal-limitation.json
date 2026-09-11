@@ -1,0 +1,58 @@
+{
+  "id": "paypal-limitation",
+  "platform": "paypal",
+  "tier": "payments",
+  "name": "PayPal account limitation (document request or 180-day hold)",
+  "distinguishing_phrases": ["your account has been limited", "180 days", "Resolution Center", "we need some information", "permanently limited", "Acceptable Use Policy", "funds will be held"],
+  "intake": [
+    { "id": "notice_date", "label": "What date was the account limited?", "type": "date", "why": "The 180-day clock and the cover message both start here.", "required": true },
+    { "id": "limitation_type", "label": "What does PayPal say it needs?", "type": "choice", "options": ["Documents through the Resolution Center", "Information about the business model", "Permanent limitation with a 180-day hold", "Acceptable Use Policy breach"], "why": "A document request is a checklist. A permanent limitation is a different letter with a different goal: releasing the funds.", "required": true },
+    { "id": "items_requested", "label": "List each item PayPal asks for in the Resolution Center.", "type": "longtext", "why": "This case is won on document completeness. The pack is built from PayPal's own list.", "required": true },
+    { "id": "business_model", "label": "Describe your business: what you sell, to whom, how it is delivered and the typical order value.", "type": "longtext", "why": "The risk team's first question is what the money is for. A clear answer resolves a large share of these.", "required": true },
+    { "id": "fulfilment_time", "label": "How long between payment and delivery?", "type": "text", "why": "Long delivery windows and preorders are the main trigger for a hold. Explaining yours is the core of the letter.", "required": true },
+    { "id": "supplier_proof", "label": "Can you show proof of stock and supplier relationships?", "type": "boolean", "why": "Proof of fulfilment capacity is what shortens a hold.", "required": true },
+    { "id": "refund_policy", "label": "What is your refund policy and where is it published?", "type": "longtext", "why": "The risk team reads it. Having it written and linked is a fact, not a promise.", "required": true },
+    { "id": "chargebacks", "label": "How many chargebacks or disputes have you had in the last 6 months, and how were they handled?", "type": "longtext", "why": "Honest numbers with handling detail beat an assurance that there are none.", "required": true },
+    { "id": "volume_change", "label": "Has your volume or average order value changed suddenly?", "type": "longtext", "why": "A spike is often the whole reason for the review.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The limitation notice or Resolution Center screenshot", "why": "We build the checklist from PayPal's own wording.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "id_documents", "label": "Photo ID and proof of address", "why": "Standard first request.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "supplier_invoices", "label": "Supplier invoices or proof of stock", "why": "Evidences that you can fulfil the orders behind the held funds.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "fulfilment_proof", "label": "Tracking numbers or delivery confirmations for recent orders", "why": "The single most effective document for shortening a hold.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "policies", "label": "Your published refund, shipping and terms pages", "why": "Shows the risk team the customer-facing commitments.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "bank_statement", "label": "Business bank statement", "why": "Sometimes requested to confirm the trading entity.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Document pack index", "guidance": "Numbered list matching PayPal's request item for item, each with the filename and what it evidences." },
+      { "heading": "Cover message", "guidance": "Short. The business, what is sold, to whom, how it ships, typical order value, and the date range of the orders behind the held balance." },
+      { "heading": "Fulfilment and refunds", "guidance": "Delivery times with tracking evidence, the published refund policy, and dispute handling with real numbers." },
+      { "heading": "Requested outcome", "guidance": "One or two sentences: lift the limitation, or where the limitation is permanent, release the balance on the stated date and confirm the withdrawal method." }
+    ],
+    "opening": "One sentence naming the account email, the limitation date and what is being asked for.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "missing_requested_item", "severity": "blocking", "check": "Every item PayPal asked for appears in the document pack index and the confirmed evidence.", "fail_message": "An item PayPal asked for is not in the pack. The review will not progress until it is." },
+    { "id": "no_fulfilment_evidence", "severity": "blocking", "check": "Tracking or delivery confirmation is in the confirmed evidence.", "fail_message": "Without delivery evidence the risk team has no reason to shorten the hold." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any business. The risk team is reading for specifics about yours." },
+    { "id": "argues_entitlement", "severity": "blocking", "check": "The message does not argue that PayPal has no right to hold the funds.", "fail_message": "Arguing entitlement does not move a risk review. Evidence of fulfilment does." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "chargebacks_vague", "severity": "advisory", "check": "Dispute numbers are stated with how they were handled.", "fail_message": "Vague dispute answers invite a longer review. Give the numbers." },
+    { "id": "no_refund_policy", "severity": "advisory", "check": "The refund policy is stated and published somewhere the reviewer can see it.", "fail_message": "An unpublished refund policy reads as no refund policy." }
+  ],
+  "submission": {
+    "where": "PayPal Resolution Center",
+    "steps": [
+      "Log in and open the Resolution Center.",
+      "Open the limitation task and upload each requested document against its own item.",
+      "Paste the cover message where a note is allowed, or send it through Message Center referencing the case.",
+      "Where the limitation is permanent, confirm the withdrawal method now so the balance releases without a further exchange on day 180."
+    ],
+    "turnaround": "PayPal usually reviews documents within 3 business days. A permanent limitation holds the balance for 180 days from the limitation date."
+  },
+  "limits": { "target_words_min": 200, "target_words_max": 500, "max_attachments": 15 }
+}
