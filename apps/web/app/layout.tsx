@@ -3,6 +3,7 @@ import Link from 'next/link';
 import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://reinstate.app';
+const noindex = process.env.NEXT_PUBLIC_NOINDEX === '1';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description:
     'Paste your deactivation notice. We classify it, tell you what evidence the platform expects, and build a Plan of Action on your facts, not a template.',
   icons: { icon: '/favicon.svg' },
+  ...(noindex ? { robots: { index: false, follow: false } } : {}),
   openGraph: { type: 'website', siteName: 'Reinstate', url: siteUrl },
 };
 
