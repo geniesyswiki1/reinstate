@@ -37,10 +37,17 @@ export interface MessageResult {
  */
 export class ConfigError extends Error {
   readonly isConfigError = true;
-  constructor(message: string) {
+  /** Coarse cause, safe to return to a caller: no key at all, or an upstream that rejected us. */
+  readonly code: string;
+  constructor(message: string, code = 'no_api_key') {
     super(message);
     this.name = 'ConfigError';
+    this.code = code;
   }
+}
+
+export function configErrorCode(err: unknown): string {
+  return (err as { code?: string })?.code ?? 'unknown';
 }
 
 export function isConfigError(err: unknown): boolean {
@@ -72,7 +79,7 @@ export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
   if (!res.ok) {
     const body = await res.text();
     if (res.status === 401 || res.status === 403 || res.status === 404) {
-      throw new ConfigError(`Anthropic API ${res.status}: ${body.slice(0, 300)}`);
+      throw new ConfigError(`Anthropic API ${res.status}: ${body.slice(0, 300)}`, `upstream_${res.status}`);
     }
     throw new Error(`Anthropic API ${res.status}: ${body.slice(0, 500)}`);
   }

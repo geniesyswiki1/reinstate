@@ -6,6 +6,7 @@ import {
   MODELS,
   EFFORT,
   isConfigError,
+  configErrorCode,
   MAX_TOKENS,
   type ContentBlock,
   type ExtractedFact,
@@ -100,7 +101,10 @@ export async function POST(request: Request) {
     captureError(err, { route: 'extract' });
     if (isConfigError(err)) {
       return NextResponse.json(
-        { error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.' },
+        {
+          error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.',
+          reason: configErrorCode(err),
+        },
         { status: 503 },
       );
     }

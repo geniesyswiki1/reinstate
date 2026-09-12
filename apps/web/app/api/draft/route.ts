@@ -10,6 +10,7 @@ import {
   MODELS,
   EFFORT,
   isConfigError,
+  configErrorCode,
   MAX_TOKENS,
 } from '@reinstate/shared';
 import { answersFor, caseByToken, confirmedFacts, setCaseStatus } from '@/lib/cases';
@@ -109,7 +110,10 @@ export async function POST(request: Request) {
     captureError(err, { route: 'draft' });
     if (isConfigError(err)) {
       return NextResponse.json(
-        { error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.' },
+        {
+          error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.',
+          reason: configErrorCode(err),
+        },
         { status: 503 },
       );
     }
