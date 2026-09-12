@@ -5,31 +5,38 @@ machine do, and what is left.
 
 ## Status
 
-A signed production `.ipa` exists and is ready to upload:
-build number 4, https://expo.dev/accounts/7amdev/projects/reinstate/builds/6c54cbb2-edec-4e37-8cf7-06d609863d1f
+**Build 7 is on TestFlight.** Confirmed against Apple's own API: processing state VALID, internal
+state READY_FOR_BETA_TESTING, in the internal group "Team (Expo)", with What to Test notes set.
 
-It cannot be submitted until the App Store Connect app record exists, because Apple has no API
-for creating one. That is the only thing standing between this build and TestFlight.
+https://appstoreconnect.apple.com/apps/6811242886/testflight/ios
 
-Three builds were needed to get here, and the fixes are worth keeping in mind for the next one:
+The only remaining step is adding testers: App Store Connect, TestFlight, Internal Testing,
+"Team (Expo)", add people by email. Internal testing needs no Beta App Review, so they get it within
+minutes. External testers need Beta App Review, about a day; the review notes and the sample notice
+are in `store-listing.md`.
 
-1. The `.p12` must be in legacy PKCS#12 encoding. OpenSSL 3 defaults to AES-256-CBC with a
-   SHA-256 MAC, which the macOS keychain silently refuses, and the build fails at Prepare
-   credentials with "hasn't been imported successfully". Export with
-   `-legacy -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg sha1`.
-2. `expo-notifications` puts `aps-environment` in the entitlements, so the bundle id needs the
-   Push Notifications capability or Xcode refuses to sign. Enabling the capability is not
-   enough on its own: the provisioning profile is a snapshot, so it has to be regenerated after.
-3. `expo doctor` fails the build on dependency drift. Keep `npx expo install --check` clean.
-4. The app icon must not carry an alpha channel. Apple refuses the upload, and the failure comes
-   back from Expo with no error text and no logs, so it is easy to misread as a credentials
-   problem. `scripts/render-app-assets.mjs` flattens every asset to colour type 2 and asserts it.
+Testers will find that classification errors, because the app points at the test deploy and no
+`ANTHROPIC_API_KEY` is set there. Set one, or point `EXPO_PUBLIC_API_BASE_URL` at a backend that has
+one, before inviting anybody.
 
-Submitting also needs the App Store Connect key named in `eas.json` under
-`submit.production.ios.ascApiKeyPath`, `ascApiKeyId` and `ascApiKeyIssuerId`. The environment
-variables alone are not enough: `eas submit` reports "App Store Connect API Keys cannot be set up
-in --non-interactive mode" and stops. Those three fields are deliberately absent from the committed
-`eas.json`, because the path is machine-local; add them locally when you submit.
+## What it took, so the next build does not rediscover it
+
+1. **The submission error is hidden.** `submission.error` and `submission.logFiles` are both empty on
+   a failed submission. The real message is in `submission.jobRun.logFileUrls`, reachable through the
+   Expo GraphQL API. Five attempts looked like an auth problem because of this.
+2. **The Expo SDK must be current.** The app was scaffolded on SDK 52 and App Store Connect rejected
+   every upload with "built with an iOS SDK that is too old". SDK 57 fixed it. Check
+   `npx expo install --check` and the current SDK before assuming a submission problem is credentials.
+3. **The `.p12` must be legacy PKCS#12.** OpenSSL 3 defaults to AES-256-CBC with a SHA-256 MAC, which
+   the macOS keychain refuses, and the build dies at Prepare credentials saying the certificate was
+   not imported. Export with `-legacy -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg sha1`.
+4. **`expo-notifications` needs the Push Notifications capability** on the bundle id, and the
+   provisioning profile must be regenerated afterwards, because a profile is a snapshot.
+5. **App icons must not carry an alpha channel.** `scripts/render-app-assets.mjs` flattens and asserts.
+6. **`eas credentials` is interactive only.** The App Store Connect key was registered through the
+   Expo GraphQL API instead: `createAppStoreConnectApiKey`, then `createIosAppCredentials` with
+   `appStoreConnectApiKeyForSubmissionsId` set. Without that link, `eas submit --non-interactive`
+   stops with "App Store Connect API Keys cannot be set up in --non-interactive mode".
 
 ## Done already
 
@@ -54,12 +61,13 @@ creating another.
 
 **Creating the App Store Connect app record.** `POST /v1/apps` returns
 `The resource 'apps' does not allow 'CREATE'`. There is no app-creation endpoint in the App Store
-Connect API at all, for any key role. Do it once by hand:
+Connect API at all, for any key role. It was created by hand for this app (id `6811242886`), and a
+second app would need the same:
 
 1. App Store Connect, Apps, the plus button, New App.
-2. Platform iOS. Name **Reinstate: Seller Appeals**. Primary language **English (UK)**.
-3. Bundle ID **app.reinstate.mobile**, already registered so it appears in the dropdown.
-4. SKU **REINSTATE001**. Full Access.
+2. Platform iOS. Name, primary language.
+3. The bundle id, which must already be registered so it appears in the dropdown.
+4. An SKU, and Full Access.
 
 **Creating an App Group.** `/v1/appGroups` does not exist. This is why the share extension is not
 in the build; see below.
