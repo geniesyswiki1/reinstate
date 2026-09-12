@@ -7,6 +7,7 @@ import {
   classifyUserMessage,
   MODELS,
   EFFORT,
+  isConfigError,
   MAX_TOKENS,
   type Classification,
   type ContentBlock,
@@ -91,6 +92,12 @@ export async function POST(request: Request) {
     result = parseJson<Classification>(call.text);
   } catch (err) {
     captureError(err, { route: 'classify' });
+    if (isConfigError(err)) {
+      return NextResponse.json(
+        { error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json(
       { error: 'We could not read that notice. Paste the text of the email instead.' },
       { status: 502 },

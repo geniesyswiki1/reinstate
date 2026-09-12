@@ -5,6 +5,7 @@ import {
   EXTRACT_SYSTEM,
   MODELS,
   EFFORT,
+  isConfigError,
   MAX_TOKENS,
   type ContentBlock,
   type ExtractedFact,
@@ -97,6 +98,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, fact });
   } catch (err) {
     captureError(err, { route: 'extract' });
+    if (isConfigError(err)) {
+      return NextResponse.json(
+        { error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json(
       { error: 'We could not read that document. Rescan it in colour at full page size and try again.' },
       { status: 502 },

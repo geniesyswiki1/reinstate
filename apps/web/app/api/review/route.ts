@@ -10,6 +10,7 @@ import {
   findBannedPhrases,
   MODELS,
   EFFORT,
+  isConfigError,
   MAX_TOKENS,
   type ParagraphScore,
   type PreCheckItem,
@@ -147,6 +148,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, report });
   } catch (err) {
     captureError(err, { route: 'review' });
+    if (isConfigError(err)) {
+      return NextResponse.json(
+        { error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ error: 'The pre-check did not complete. Try again in a moment.' }, { status: 502 });
   }
 }

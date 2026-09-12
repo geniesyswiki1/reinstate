@@ -9,6 +9,7 @@ import {
   normaliseDashes,
   MODELS,
   EFFORT,
+  isConfigError,
   MAX_TOKENS,
 } from '@reinstate/shared';
 import { answersFor, caseByToken, confirmedFacts, setCaseStatus } from '@/lib/cases';
@@ -106,6 +107,12 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     captureError(err, { route: 'draft' });
+    if (isConfigError(err)) {
+      return NextResponse.json(
+        { error: 'The appeal service is not set up correctly. That is on us, not your notice. Try again shortly.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ error: 'The draft did not complete. Try again in a moment.' }, { status: 502 });
   }
 }

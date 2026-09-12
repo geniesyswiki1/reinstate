@@ -30,11 +30,28 @@ export interface MessageResult {
   output_tokens: number;
 }
 
+/**
+ * The backend is misconfigured, as distinct from the model or the notice being unreadable. The two
+ * need different answers: telling a seller to paste the text again when the key is missing sends
+ * them round a loop they cannot get out of, and hides the outage from us.
+ */
+export class ConfigError extends Error {
+  readonly isConfigError = true;
+  constructor(message: string) {
+    super(message);
+    this.name = 'ConfigError';
+  }
+}
+
+export function isConfigError(err: unknown): boolean {
+  return err instanceof ConfigError || (err as { isConfigError?: boolean })?.isConfigError === true;
+}
+
 const ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
 export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
   const apiKey = call.apiKey ?? process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set');
+  if (!apiKey) throw new ConfigError('ANTHROPIC_API_KEY is not set');
 
   const res = await fetch(ENDPOINT, {
     method: 'POST',
@@ -54,6 +71,9 @@ export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
 
   if (!res.ok) {
     const body = await res.text();
+    if (res.status === 401 || res.status === 403 || res.status === 404) {
+      throw new ConfigError(`Anthropic API ${res.status}: ${body.slice(0, 300)}`);
+    }
     throw new Error(`Anthropic API ${res.status}: ${body.slice(0, 500)}`);
   }
 
