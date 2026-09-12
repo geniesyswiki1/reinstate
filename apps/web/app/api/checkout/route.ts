@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getCaseType, tierForPlatform, TIER_PRICES, type Tier } from '@reinstate/shared';
-import { checkoutUrl } from '@/lib/lemonsqueezy';
+import { createCheckoutSession } from '@/lib/stripe';
+import { SITE_URL } from '@/lib/env';
+import { captureError } from '@/lib/ops';
 
 export const runtime = 'nodejs';
 
-/** Turns a free classification into a Lemon Squeezy checkout for the right tier. */
+/** Turns a free classification into a Stripe Managed Payments checkout for the right tier. */
 export async function POST(request: Request) {
   const { classification_id, case_type, email } = (await request.json()) as {
     classification_id?: string;
@@ -21,7 +23,19 @@ export async function POST(request: Request) {
   }
 
   const tier: Tier = tierForPlatform(ct.platform);
-  const url = checkoutUrl(tier, classification_id, email);
+
+  let url: string | null = null;
+  try {
+    url = await createCheckoutSession({ tier, classificationId: classification_id, email, siteUrl: SITE_URL });
+  } catch (err) {
+    // A Stripe outage is ours, not the seller's. Say so and give them a way through.
+    captureError(err, { route: 'checkout', tier });
+    return NextResponse.json(
+      { error: 'We could not open checkout. Email desk@reinstate.app and we will open the case manually.' },
+      { status: 502 },
+    );
+  }
+
   if (!url) {
     return NextResponse.json(
       { error: 'Checkout is not configured yet. Email desk@reinstate.app and we will open the case manually.' },

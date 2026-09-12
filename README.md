@@ -29,7 +29,7 @@ npm run dev               # http://localhost:3000
 ```
 
 The free classify endpoint works with `ANTHROPIC_API_KEY` alone. Cases, uploads, drafts and the
-pre-check need Supabase; payments need Lemon Squeezy; the case link email needs Resend.
+pre-check need Supabase; payments need Stripe Managed Payments; the case link email needs Resend.
 
 ## Checks
 
@@ -62,7 +62,8 @@ Netlify, with `@netlify/plugin-nextjs`. Set every variable in `.env.example` in 
 environment. `netlify/functions/purge.mts` runs nightly at 03:00 UTC and calls `/api/purge`, which
 deletes expired cases and their stored files.
 
-Point the Lemon Squeezy `order_created` webhook at `/api/webhooks/lemonsqueezy` and the RevenueCat
+Point the Stripe webhook at `/api/webhooks/stripe`, subscribed to `checkout.session.completed`,
+`checkout.session.async_payment_succeeded` and `checkout.session.async_payment_failed`, and the RevenueCat
 webhook at `/api/webhooks/revenuecat` with `Authorization: Bearer $REVENUECAT_WEBHOOK_SECRET`.
 
 ## Conventions

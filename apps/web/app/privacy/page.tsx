@@ -45,7 +45,7 @@ export default function Privacy() {
 
       <h2 className="mb-3 mt-8">Who else sees it</h2>
       <p className="mb-4">
-        Our payment provider, Lemon Squeezy, holds your purchase record and your email; we never see
+        Our payment provider, Stripe, is the merchant of record and holds your purchase record and your email; we never see
         your card details. Our email provider, Resend, sends your case link. Our hosting and database
         providers store the data described above. Nobody else.
       </p>

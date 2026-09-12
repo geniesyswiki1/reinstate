@@ -16,7 +16,7 @@ export function GET() {
     configured: {
       anthropic: Boolean(process.env.ANTHROPIC_API_KEY),
       supabase: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
-      lemonsqueezy: Boolean(process.env.LEMONSQUEEZY_WEBHOOK_SECRET),
+      stripe: Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET),
       revenuecat: Boolean(process.env.REVENUECAT_WEBHOOK_SECRET),
       resend: Boolean(process.env.RESEND_API_KEY),
     },

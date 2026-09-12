@@ -83,7 +83,7 @@ create table if not exists outcomes (
   recorded_at timestamptz not null default now()
 );
 
--- Free classifications, held so a Lemon Squeezy webhook can build the case from one.
+-- Free classifications, held so a Stripe webhook can build the case from one.
 create table if not exists classifications (
   id uuid primary key default gen_random_uuid(),
   platform text,
