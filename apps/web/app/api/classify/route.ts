@@ -6,7 +6,7 @@ import {
   CLASSIFY_SYSTEM,
   classifyUserMessage,
   MODELS,
-  TEMPERATURES,
+  EFFORT,
   MAX_TOKENS,
   type Classification,
   type ContentBlock,
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
       model: MODELS.classify,
       system: CLASSIFY_SYSTEM,
       content,
-      temperature: TEMPERATURES.classify,
+      effort: EFFORT.classify,
       max_tokens: MAX_TOKENS.classify,
     });
     result = parseJson<Classification>(call.text);

@@ -15,9 +15,9 @@ The only remaining step is adding testers: App Store Connect, TestFlight, Intern
 minutes. External testers need Beta App Review, about a day; the review notes and the sample notice
 are in `store-listing.md`.
 
-Testers will find that classification errors, because the app points at the test deploy and no
-`ANTHROPIC_API_KEY` is set there. Set one, or point `EXPO_PUBLIC_API_BASE_URL` at a backend that has
-one, before inviting anybody.
+The app points at the test deploy, which now has an `ANTHROPIC_API_KEY`, so classification works
+for testers. If you repoint `EXPO_PUBLIC_API_BASE_URL` at another backend, set the key there too or
+the Start screen errors on the first paste.
 
 ## What it took, so the next build does not rediscover it
 

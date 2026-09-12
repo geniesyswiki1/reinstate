@@ -18,7 +18,8 @@ export interface MessageCall {
   model: string;
   system: string;
   content: ContentBlock[];
-  temperature: number;
+  /** How hard the model should think: low, medium, high, xhigh or max. See EFFORT in prompts/models. */
+  effort: string;
   max_tokens: number;
   apiKey?: string;
 }
@@ -45,7 +46,7 @@ export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
     body: JSON.stringify({
       model: call.model,
       max_tokens: call.max_tokens,
-      temperature: call.temperature,
+      output_config: { effort: call.effort },
       system: call.system,
       messages: [{ role: 'user', content: call.content }],
     }),
@@ -58,6 +59,7 @@ export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
 
   const json = (await res.json()) as {
     content: { type: string; text?: string }[];
+    stop_reason?: string;
     usage?: { input_tokens: number; output_tokens: number };
   };
 
@@ -65,6 +67,21 @@ export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
     .filter((b) => b.type === 'text')
     .map((b) => b.text ?? '')
     .join('');
+
+  /**
+   * Thinking is on by default on both current models and is billed against max_tokens, so a pass
+   * whose budget is too small burns the lot thinking and returns no answer at all. Say that
+   * plainly: the alternative is an empty string reaching parseJson, which reports "No JSON found"
+   * and sends you looking for a prompt bug that is not there.
+   */
+  if (!text.trim()) {
+    if (json.stop_reason === 'max_tokens') {
+      throw new Error(
+        `Anthropic returned no text: the ${call.model} call hit max_tokens (${call.max_tokens}) while thinking. Raise MAX_TOKENS or lower EFFORT for this pass.`,
+      );
+    }
+    throw new Error(`Anthropic returned no text (stop_reason: ${json.stop_reason ?? 'unknown'}).`);
+  }
 
   return {
     text,

@@ -9,7 +9,7 @@ import {
   caseTerms,
   findBannedPhrases,
   MODELS,
-  TEMPERATURES,
+  EFFORT,
   MAX_TOKENS,
   type ParagraphScore,
   type PreCheckItem,
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       model: MODELS.review,
       system: reviewSystem(caseType),
       content: [{ type: 'text', text: reviewUserMessage({ draft: draft.body_md, answers, facts }) }],
-      temperature: TEMPERATURES.review,
+      effort: EFFORT.review,
       max_tokens: MAX_TOKENS.review,
     });
 

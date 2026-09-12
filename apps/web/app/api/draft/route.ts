@@ -8,7 +8,7 @@ import {
   factIsCitable,
   normaliseDashes,
   MODELS,
-  TEMPERATURES,
+  EFFORT,
   MAX_TOKENS,
 } from '@reinstate/shared';
 import { answersFor, caseByToken, confirmedFacts, setCaseStatus } from '@/lib/cases';
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
           }),
         },
       ],
-      temperature: TEMPERATURES.draft,
+      effort: EFFORT.draft,
       max_tokens: MAX_TOKENS.draft,
     });
 

@@ -25,7 +25,7 @@ import {
   reviewSystem,
   reviewUserMessage,
   MODELS,
-  TEMPERATURES,
+  EFFORT,
   MAX_TOKENS,
   type Classification,
   type ExtractedFact,
@@ -57,7 +57,7 @@ const classifyCall = await callAnthropic({
   model: MODELS.classify,
   system: CLASSIFY_SYSTEM,
   content: [{ type: 'text', text: classifyUserMessage(notice) }],
-  temperature: TEMPERATURES.classify,
+  effort: EFFORT.classify,
   max_tokens: MAX_TOKENS.classify,
 });
 const classification = parseJson<Classification>(classifyCall.text);
@@ -86,7 +86,7 @@ const draftCall = await callAnthropic({
       text: draftUserMessage({ caseType, noticeText: notice, answers: fixture.answers, facts: fixture.facts }),
     },
   ],
-  temperature: TEMPERATURES.draft,
+  effort: EFFORT.draft,
   max_tokens: MAX_TOKENS.draft,
 });
 const draft = draftCall.text.trim();
@@ -120,7 +120,7 @@ const reviewCall = await callAnthropic({
   model: MODELS.review,
   system: reviewSystem(caseType),
   content: [{ type: 'text', text: reviewUserMessage({ draft, answers: fixture.answers, facts: fixture.facts }) }],
-  temperature: TEMPERATURES.review,
+  effort: EFFORT.review,
   max_tokens: MAX_TOKENS.review,
 });
 const report = parseJson<{ items: PreCheckItem[]; paragraphs: ParagraphScore[] }>(reviewCall.text);

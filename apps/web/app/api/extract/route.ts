@@ -4,7 +4,7 @@ import {
   parseJson,
   EXTRACT_SYSTEM,
   MODELS,
-  TEMPERATURES,
+  EFFORT,
   MAX_TOKENS,
   type ContentBlock,
   type ExtractedFact,
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       model: MODELS.extract,
       system: EXTRACT_SYSTEM,
       content,
-      temperature: TEMPERATURES.extract,
+      effort: EFFORT.extract,
       max_tokens: MAX_TOKENS.extract,
     });
 

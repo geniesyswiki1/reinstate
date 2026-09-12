@@ -15,7 +15,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "casecheck": "tsx scripts/casetype-lint.ts",
     "dashcheck": "tsx scripts/dash-lint.ts",
-    "fixture": "tsx scripts/run-fixture.ts",
+    "fixture": "tsx scripts/run-fixture.mts",
     "postinstall": "patch-package"
   },
   "devDependencies": {
