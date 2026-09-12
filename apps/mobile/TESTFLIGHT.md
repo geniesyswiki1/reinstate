@@ -21,6 +21,15 @@ Three builds were needed to get here, and the fixes are worth keeping in mind fo
    Push Notifications capability or Xcode refuses to sign. Enabling the capability is not
    enough on its own: the provisioning profile is a snapshot, so it has to be regenerated after.
 3. `expo doctor` fails the build on dependency drift. Keep `npx expo install --check` clean.
+4. The app icon must not carry an alpha channel. Apple refuses the upload, and the failure comes
+   back from Expo with no error text and no logs, so it is easy to misread as a credentials
+   problem. `scripts/render-app-assets.mjs` flattens every asset to colour type 2 and asserts it.
+
+Submitting also needs the App Store Connect key named in `eas.json` under
+`submit.production.ios.ascApiKeyPath`, `ascApiKeyId` and `ascApiKeyIssuerId`. The environment
+variables alone are not enough: `eas submit` reports "App Store Connect API Keys cannot be set up
+in --non-interactive mode" and stops. Those three fields are deliberately absent from the committed
+`eas.json`, because the path is machine-local; add them locally when you submit.
 
 ## Done already
 

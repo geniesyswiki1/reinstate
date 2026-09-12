@@ -32,7 +32,7 @@
     "production": {
       "ios": {
         "appleTeamId": "9Z6DNX67TV",
-        "ascAppId": "REPLACE_ONCE_THE_APP_RECORD_EXISTS"
+        "ascAppId": "6811242886"
       },
       "android": {
         "serviceAccountKeyPath": "./play-service-account.json",
