@@ -3,6 +3,25 @@
 Written from an actual run, not from the docs. What was done, what Apple would not let a
 machine do, and what is left.
 
+## Status
+
+A signed production `.ipa` exists and is ready to upload:
+build number 4, https://expo.dev/accounts/7amdev/projects/reinstate/builds/6c54cbb2-edec-4e37-8cf7-06d609863d1f
+
+It cannot be submitted until the App Store Connect app record exists, because Apple has no API
+for creating one. That is the only thing standing between this build and TestFlight.
+
+Three builds were needed to get here, and the fixes are worth keeping in mind for the next one:
+
+1. The `.p12` must be in legacy PKCS#12 encoding. OpenSSL 3 defaults to AES-256-CBC with a
+   SHA-256 MAC, which the macOS keychain silently refuses, and the build fails at Prepare
+   credentials with "hasn't been imported successfully". Export with
+   `-legacy -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg sha1`.
+2. `expo-notifications` puts `aps-environment` in the entitlements, so the bundle id needs the
+   Push Notifications capability or Xcode refuses to sign. Enabling the capability is not
+   enough on its own: the provisioning profile is a snapshot, so it has to be regenerated after.
+3. `expo doctor` fails the build on dependency drift. Keep `npx expo install --check` clean.
+
 ## Done already
 
 Against the Expo account `7amdev` and Apple team `9Z6DNX67TV`:
@@ -39,6 +58,9 @@ in the build; see below.
 ## Submitting
 
 Once the app record exists:
+
+Set `submit.production.ios.ascAppId` in `eas.json` to the numeric app id App Store Connect gives
+the new record, then:
 
 ```bash
 cd apps/mobile
