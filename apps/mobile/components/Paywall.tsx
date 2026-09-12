@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Linking, View } from 'react-native';
 import type { Tier } from '@reinstate/shared';
 import { buy, restore } from '@/lib/purchases';
+import { API_BASE_URL } from '@/lib/api';
 import { Button, Muted, Notice } from '@/components/ui';
 import { space } from '@/lib/theme';
 
@@ -52,7 +53,7 @@ export default function Paywall({
       <Button
         label="Terms and privacy"
         variant="secondary"
-        onPress={() => Linking.openURL('https://reinstate.app/terms')}
+        onPress={() => Linking.openURL(`${API_BASE_URL}/terms`)}
       />
       {classificationId ? null : (
         <Muted>Classify your notice first so we know which case this is.</Muted>

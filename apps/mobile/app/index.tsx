@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, TextInput, View, StyleSheet, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { useShareIntent } from 'expo-share-intent';
 import {
   getCaseType,
   priceForCaseType,
@@ -24,19 +23,10 @@ export default function Start() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ClassifyResult | null>(null);
   const [hasCases, setHasCases] = useState(false);
-  const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
 
   useEffect(() => {
     void listCases().then((cases) => setHasCases(cases.length > 0));
   }, []);
-
-  // Shared from Mail: the notice text arrives straight into the box.
-  useEffect(() => {
-    if (hasShareIntent && shareIntent.text) {
-      setText(shareIntent.text);
-      resetShareIntent();
-    }
-  }, [hasShareIntent, shareIntent, resetShareIntent]);
 
   const classify = useCallback(
     async (file?: { media_type: string; data: string }) => {

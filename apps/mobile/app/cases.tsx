@@ -79,7 +79,7 @@ export default function Cases() {
         value={token}
         onChangeText={setToken}
         autoCapitalize="none"
-        placeholder="https://reinstate.app/case/..."
+        placeholder="Paste your case link"
         placeholderTextColor={colors.muted}
       />
       <View style={{ height: space.sm }} />

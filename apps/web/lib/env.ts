@@ -9,7 +9,12 @@ export function optionalEnv(name: string): string | null {
   return process.env[name] ?? null;
 }
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://reinstate.app';
+/**
+ * Set NEXT_PUBLIC_SITE_URL on every deploy. There is no production default on purpose:
+ * reinstate.app is registered to someone else, and case links, canonicals and emails are
+ * all built from this value, so a wrong default would send customers to a third party.
+ */
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
 /** True when the database is configured. Lets the free classify endpoint work without it. */
 export function hasSupabase(): boolean {

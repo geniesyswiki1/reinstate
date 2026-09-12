@@ -33,8 +33,9 @@
         "backgroundColor": "#0E7A4F"
       },
       "permissions": [
-        "CAMERA",
-        "READ_MEDIA_IMAGES"
+        "android.permission.CAMERA",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "plugins": [
@@ -51,20 +52,18 @@
           "photosPermission": "Reinstate reads photographs of your notice and your documents so it can build your appeal."
         }
       ],
-      [
-        "expo-share-intent",
-        {
-          "iosActivationRules": {
-            "NSExtensionActivationSupportsText": true,
-            "NSExtensionActivationSupportsWebURLWithMaxCount": 1
-          }
-        }
-      ],
       "expo-secure-store",
       "expo-notifications"
     ],
     "extra": {
-      "apiBaseUrl": "https://reinstate.app"
-    }
+      "apiBaseUrl": "https://reinstate-test.netlify.app",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "6e69c9e6-6e1e-49e0-87c2-856d25bcdcf7"
+      }
+    },
+    "owner": "7amdev"
   }
 }

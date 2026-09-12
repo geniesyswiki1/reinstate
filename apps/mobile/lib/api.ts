@@ -8,7 +8,7 @@ import { ReinstateApi } from '@reinstate/shared';
 const baseUrl =
   process.env.EXPO_PUBLIC_API_BASE_URL ??
   (Constants.expoConfig?.extra?.apiBaseUrl as string | undefined) ??
-  'https://reinstate.app';
+  'https://reinstate-test.netlify.app';
 
 export const api = new ReinstateApi({ baseUrl });
 export const API_BASE_URL = baseUrl;
