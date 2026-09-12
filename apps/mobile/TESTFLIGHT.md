@@ -1,97 +1,101 @@
 # Getting Reinstate onto TestFlight
 
-Everything in this repo is ready to build. The steps below are the ones that need accounts and
-credentials, which is why they were not run for you.
+Written from an actual run, not from the docs. What was done, what Apple would not let a
+machine do, and what is left.
 
-## What you need first
+## Done already
 
-- An Apple Developer account (company enrolment, and the Small Business Program).
-- An Expo account with EAS. `npx eas login`.
-- A RevenueCat project with the four consumables in section 12.4.
+Against the Expo account `7amdev` and Apple team `9Z6DNX67TV`:
 
-## 1. Point the app at your accounts
+| | |
+| --- | --- |
+| EAS project | `@7amdev/reinstate`, id `6e69c9e6-6e1e-49e0-87c2-856d25bcdcf7` |
+| Bundle ids registered | `app.reinstate.mobile`, `app.reinstate.mobile.share-extension` |
+| Distribution certificate | `PUUPG2UJ92`, expires 2027-09-12 |
+| Provisioning profile | `Reinstate App Store`, App Store type, ACTIVE |
+| Build profile | `production`, `credentialsSource: local` |
 
-Three placeholders in `eas.json` must be replaced. `eas init` writes the project id and the
-owner into `app.json` itself, so neither needs editing by hand.
+The signing private key was generated in the build environment and never transmitted. The
+`.p12`, the `.mobileprovision` and the App Store Connect `.p8` all live outside the repository;
+`credentials.json` points at them and is gitignored.
 
-| File | Field | Replace with |
-| --- | --- | --- |
-| `eas.json` | `submit.production.ios.appleId` | your Apple ID email |
-| `eas.json` | `submit.production.ios.ascAppId` | the App Store Connect app id |
-| `eas.json` | `submit.production.ios.appleTeamId` | your Apple team id |
+You are now at two iOS distribution certificates, which is the Apple maximum. Revoke one before
+creating another.
 
-Set the RevenueCat keys as EAS secrets rather than committing them:
+## What Apple will not let a machine do
 
-```bash
-npx eas secret:create --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value appl_xxx
-npx eas secret:create --name EXPO_PUBLIC_REVENUECAT_ANDROID_KEY --value goog_xxx
-```
+**Creating the App Store Connect app record.** `POST /v1/apps` returns
+`The resource 'apps' does not allow 'CREATE'`. There is no app-creation endpoint in the App Store
+Connect API at all, for any key role. Do it once by hand:
 
-## 2. Create the app record
+1. App Store Connect, Apps, the plus button, New App.
+2. Platform iOS. Name **Reinstate: Seller Appeals**. Primary language **English (UK)**.
+3. Bundle ID **app.reinstate.mobile**, already registered so it appears in the dropdown.
+4. SKU **REINSTATE001**. Full Access.
+
+**Creating an App Group.** `/v1/appGroups` does not exist. This is why the share extension is not
+in the build; see below.
+
+## Submitting
+
+Once the app record exists:
 
 ```bash
 cd apps/mobile
-npx eas init                 # creates the EAS project, writes the projectId
-npx eas credentials          # generates the signing certificate and provisioning profile
+export EXPO_TOKEN=...                       # expo.dev, Account Settings, Access tokens
+export EXPO_ASC_API_KEY_PATH=/path/to/AuthKey_PU69GN8JYQ.p8
+export EXPO_ASC_KEY_ID=PU69GN8JYQ
+export EXPO_ASC_ISSUER_ID=a005fd01-4aff-48ae-ae4e-5e1f5a680677
+export EXPO_APPLE_TEAM_ID=9Z6DNX67TV
+
+npx eas-cli submit --platform ios --latest --non-interactive
 ```
 
-Create the app in App Store Connect with bundle id `app.reinstate.mobile`, then add the four
-consumable in-app purchases from `store-listing.md`.
+Then in App Store Connect, TestFlight, Internal Testing: add a group, add the alpha cohort by
+email, up to 100 testers. Internal testing needs no Beta App Review, so the build appears for them
+as soon as processing finishes. Create the external group in parallel; its review takes about a day
+and does not block internal testers.
 
-## 3. Build and upload
+Paste the review notes from `store-listing.md` into Test Information, including the sample notice,
+and attach a test invoice PDF.
+
+## Rebuilding
 
 ```bash
-npx eas build --platform ios --profile production
-npx eas submit --platform ios --latest
+npx eas-cli build --platform ios --profile production --non-interactive
 ```
 
-The build runs on EAS, so no Mac is needed. `eas submit` uploads to App Store Connect.
+`credentials.json` must exist and point at the `.p12` and `.mobileprovision`. If it is missing, the
+build fails at credential setup, because `eas credentials` is interactive only and cannot run here.
 
-## 4. TestFlight
+## Two things this build does not have
 
-Internal testing takes minutes and needs no Beta App Review:
+**The share extension, so no sharing a suspension email from Mail.** `expo-share-intent` adds a
+Share Extension target that needs the App Group `group.app.reinstate.mobile`, and app groups can
+only be created in the developer portal. Paste and camera capture both work. To restore it:
 
-1. App Store Connect, TestFlight, Internal Testing, add a group.
-2. Add the alpha cohort by email, up to 100 testers.
-3. The build appears for them as soon as processing finishes.
+1. Create the App Group `group.app.reinstate.mobile` in the developer portal, and enable App Groups
+   on both bundle ids.
+2. Put `["expo-share-intent", { "iosActivationRules": { "NSExtensionActivationSupportsText": true,
+   "NSExtensionActivationSupportsWebURLWithMaxCount": 1 } }]` back in `app.json` plugins.
+3. Restore the `useShareIntent` hook in `app/index.tsx`: the import, the destructure, and the
+   effect that copies `shareIntent.text` into the notice box.
+4. Regenerate the provisioning profiles; there will be two targets to sign.
 
-Create the external group in parallel. Its Beta App Review takes about a day and does not block the
-internal testers.
-
-Paste the review notes from `store-listing.md` into the Test Information tab, including the sample
-notice, and attach a test invoice PDF.
-
-## 5. Android, same day
-
-```bash
-npx eas build --platform android --profile production
-npx eas submit --platform android --latest    # goes to the internal track
-```
-
-Put the Play service account JSON at `apps/mobile/play-service-account.json`. It is gitignored.
-
-## Before you submit for store review
-
-- Replace the API base URL in the `production` profile of `eas.json` if you are not using
-  `https://reinstate.app`.
-- Take the six screenshots in the order listed in `store-listing.md`.
-- Fill in the privacy labels from the table in `store-listing.md`.
-- Confirm the free classify runs before any paywall. Apple reviewers try the core action first, and
-  it must work without an account.
+**Deep linking from the purchase into the new case.** After a purchase the RevenueCat webhook
+creates the case and emails the link, and the app waits for that email. Closing the loop needs
+RevenueCat live.
 
 ## A patch you must not delete
 
-`patches/xcode+3.0.1.patch` is required. `expo-share-intent` adds the Share Extension target through
-the `xcode` package, whose `correctForPath` reads `.path` on a `Resources` group that a share
-extension does not have, so `expo prebuild` and therefore every iOS build fails without it. The root
-`postinstall` script applies it on every install, including `npm ci` in CI. If you ever see
-"Could not add resource files to the Share Extension", the patch did not apply.
+`patches/xcode+3.0.1.patch` is required whenever the share extension is re-enabled.
+`expo-share-intent` adds its target through the `xcode` package, whose `correctForPath` reads
+`.path` on a `Resources` group a share extension does not have, so `expo prebuild` and every iOS
+build fail without it. The root `postinstall` applies it on every install, including `npm ci` in CI.
 
-## What this app does not do yet
+## Which backend the app talks to
 
-- The paywall completes a purchase and RevenueCat's webhook creates the case, but the app then waits
-  for the case link by email. Deep linking straight from the purchase into the new case needs the
-  webhook to return the token to the client, which is a small addition once RevenueCat is live.
-- The document scanner uses the camera and the photo library. Edge-detected multi-page scanning
-  (section 12.2) needs a dev client build with a scanner plugin, which cannot be verified without a
-  device.
+`eas.json` sets `EXPO_PUBLIC_API_BASE_URL` per profile. It currently points at
+`https://reinstate-test.netlify.app` for every profile, including production, because
+**reinstate.app is registered to another company** and serves an unrelated product. Point this at
+the real domain once you have one, or the app posts sellers' notices and documents to a third party.
