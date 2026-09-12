@@ -1,0 +1,56 @@
+{
+  "id": "amazon-related-account",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Section 3 deactivation, related account",
+  "distinguishing_phrases": ["related to another account", "multiple selling accounts", "linked account", "operate more than one selling account", "account was closed or terminated"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the deactivation notice?", "type": "date", "why": "The appeal opens by naming the account and the notice date.", "required": true },
+    { "id": "related_named", "label": "Does the notice name the other account?", "type": "choice", "options": ["Yes, it names it", "No, it does not"], "why": "The two cases are different. If Amazon has not named the account you must ask which one, not guess.", "required": true },
+    { "id": "related_identity", "label": "If named, which account is it?", "type": "text", "why": "We address that account directly rather than talking about accounts in general.", "required": false, "showIf": { "question_id": "related_named", "equals": "Yes, it names it" } },
+    { "id": "relationship", "label": "What is your actual relationship to that account?", "type": "choice", "options": ["No relationship at all", "It is mine and it is closed in good standing", "It is mine and it was deactivated", "It belongs to a family member or housemate", "It belongs to a business partner or employee", "I bought or sold this account"], "why": "Each of these has a different appeal. Three of them need Amazon's permission to operate both accounts.", "required": true },
+    { "id": "shared_signals", "label": "What could have linked the two accounts? (address, device, network, bank, card, phone, tax ID, email)", "type": "longtext", "why": "The root cause has to name the actual link. Saying you cannot think of one gets an automatic rejection.", "required": true },
+    { "id": "authorisation_requested", "label": "Did you ever ask Amazon for permission to operate a second account?", "type": "boolean", "why": "If you did, the case reference is your strongest fact. If you did not, the corrective action is to seek it.", "required": true },
+    { "id": "separation_actions", "label": "What have you already done to separate the two operations?", "type": "longtext", "why": "Corrective actions must already have happened, with dates.", "required": true },
+    { "id": "other_account_status", "label": "What is the current status of the other account?", "type": "text", "why": "A related-account appeal usually cannot succeed until the other account's own issue is resolved.", "required": false },
+    { "id": "preventive_owner", "label": "Who now controls access to the account and on what devices?", "type": "text", "why": "Preventive measures need an owner and a system, not an intention.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The deactivation notice", "why": "We quote the notice date and any account Amazon names.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "separation_proof", "label": "Proof of separation (separate business registration, bank account, premises, broadband account)", "why": "Turns a claim of separate operations into a verifiable one.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "authorisation_case", "label": "The case reference where you asked permission for a second account", "why": "If it exists it is the single fact that resolves this case fastest.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "identity_docs", "label": "Business registration or ID showing the two businesses are different entities", "why": "Used where the accounts belong to different people at the same address.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Root cause", "guidance": "Name the actual link Amazon detected and explain how it arose. If there is genuinely no relationship, say what shared signal could have caused a false link and offer the evidence." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets describing the separation already done, or the permission already requested." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets with an owner: who accesses the account, from which devices and network, and how a second account would be requested in future." }
+    ],
+    "opening": "One sentence naming the seller account, the related account if Amazon named it, and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "no_link_named", "severity": "blocking", "check": "The root cause names the specific shared signal rather than denying any link exists.", "fail_message": "The appeal does not name what linked the accounts. A flat denial is rejected without review." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. Seller Performance rejects template language." },
+    { "id": "root_cause_restates_notice", "severity": "blocking", "check": "The root cause explains the seller's own act or omission rather than repeating the notice wording.", "fail_message": "The root cause restates Amazon's notice instead of explaining what happened." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question rather than letting the draft generalise." },
+    { "id": "other_account_ignored", "severity": "advisory", "check": "Where the other account is deactivated, the appeal states what is being done about it.", "fail_message": "This appeal is unlikely to succeed while the related account's own deactivation is unresolved." },
+    { "id": "too_long", "severity": "advisory", "check": "Under 600 words.", "fail_message": "Over 600 words. Reviewers skim; the extra length dilutes the specifics." }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, Reactivate your account",
+    "steps": [
+      "Open Seller Central and go to Performance, then Account Health.",
+      "Click Reactivate your account on the deactivation banner.",
+      "Paste the Plan of Action as plain text.",
+      "Attach the separation evidence as separate files.",
+      "If Amazon has not named the related account, ask in the same submission which account it is."
+    ],
+    "turnaround": "Amazon's stated turnaround is 3 to 5 business days."
+  },
+  "limits": { "target_words_min": 350, "target_words_max": 600, "max_attachments": 10 }
+}

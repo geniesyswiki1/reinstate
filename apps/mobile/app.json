@@ -1,0 +1,69 @@
+{
+  "expo": {
+    "name": "Reinstate: Seller Appeals",
+    "slug": "reinstate",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "reinstate",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F8FA"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.reinstate.mobile",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Reinstate uses the camera to photograph your deactivation notice and your invoices, so it can read them and build your appeal.",
+        "NSPhotoLibraryUsageDescription": "Reinstate reads photographs of your notice and your documents so it can build your appeal.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "app.reinstate.mobile",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0E7A4F"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Reinstate uses the camera to photograph your deactivation notice and your invoices."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Reinstate reads photographs of your notice and your documents so it can build your appeal."
+        }
+      ],
+      "expo-secure-store",
+      "expo-notifications"
+    ],
+    "extra": {
+      "apiBaseUrl": "https://reinstate-test.netlify.app",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "6e69c9e6-6e1e-49e0-87c2-856d25bcdcf7"
+      }
+    },
+    "owner": "7amdev"
+  }
+}

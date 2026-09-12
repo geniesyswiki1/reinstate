@@ -1,0 +1,195 @@
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/public-sans-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/public-sans-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/source-serif-4-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Section 2.4. Exactly six tokens. No dark mode in v1. */
+:root {
+  --sheet: #f7f8fa;
+  --ink: #161a22;
+  --rule: #d5d9e0;
+  --muted: #5f6672;
+  --reinstated: #0e7a4f;
+  --notice: #b3261e;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    background: var(--sheet);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--sheet);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+    text-align: left;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  @media (min-width: 768px) {
+    h1 {
+      font-size: 48px;
+    }
+    h2 {
+      font-size: 30px;
+    }
+  }
+
+  a {
+    color: var(--reinstated);
+    text-underline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--rule);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--reinstated);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .prose-serif {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 66ch;
+  }
+
+  .btn {
+    display: inline-block;
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--reinstated);
+    color: var(--sheet);
+  }
+
+  .btn-primary:hover {
+    background: #0b6642;
+  }
+
+  .btn-primary:disabled {
+    background: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--ink);
+  }
+
+  .field {
+    width: 100%;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: #ffffff;
+    color: var(--ink);
+    padding: 10px 12px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+  }
+
+  .field:focus {
+    border-color: var(--reinstated);
+  }
+
+  .rule-top {
+    border-top: 1px solid var(--rule);
+  }
+
+  .mark-notice {
+    background: rgba(179, 38, 30, 0.12);
+    color: var(--notice);
+    padding: 0 2px;
+  }
+}

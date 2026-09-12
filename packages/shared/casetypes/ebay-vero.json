@@ -1,0 +1,55 @@
+{
+  "id": "ebay-vero",
+  "platform": "ebay",
+  "tier": "marketplace",
+  "name": "VeRO takedown response",
+  "distinguishing_phrases": ["VeRO", "Verified Rights Owner", "listing was removed at the request of", "rights owner", "intellectual property owner", "retraction"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the VeRO notice?", "type": "date", "why": "The response opens with the username, the item numbers and the date.", "required": true },
+    { "id": "username", "label": "What is your eBay username?", "type": "text", "why": "eBay matches responses by username.", "required": true },
+    { "id": "rights_owner", "label": "Which rights owner requested the removal?", "type": "text", "why": "On VeRO, eBay will not overturn the removal. Only the rights owner can retract it.", "required": true },
+    { "id": "item_numbers", "label": "Which item numbers were removed?", "type": "longtext", "why": "The retraction request has to name them.", "required": true },
+    { "id": "reason_given", "label": "What reason does the notice give?", "type": "longtext", "why": "Counterfeit, unauthorised use of images, and unauthorised resale are three different conversations with the rights owner.", "required": true },
+    { "id": "goods_genuine", "label": "Are the goods genuine, and where did you buy them?", "type": "longtext", "why": "Genuine goods bought from a verifiable source are the basis of most successful retraction requests.", "required": true },
+    { "id": "images_source", "label": "Where did your listing images and description text come from?", "type": "longtext", "why": "Where the complaint is about images, replacing them with your own photographs resolves it immediately.", "required": true },
+    { "id": "contact_attempted", "label": "Have you contacted the rights owner?", "type": "longtext", "why": "This is the only route back. We draft the approach.", "required": true },
+    { "id": "repeat_offence", "label": "Is this your first VeRO removal?", "type": "boolean", "why": "Repeat removals lead to account restriction, which changes what the response has to cover.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The VeRO removal notice", "why": "We quote the rights owner and the item numbers exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "invoices", "label": "Invoices for the removed items", "why": "Supports a genuine goods retraction request.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "own_photos", "label": "Your own photographs of the items", "why": "Resolves an image-based complaint outright.", "required": false, "accepts": ["png", "jpg", "pdf"] },
+    { "id": "authorisation", "label": "Any authorisation or distributor letter", "why": "Where it exists it ends the case.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Retraction request to the rights owner", "guidance": "A short, courteous email to the rights owner naming the item numbers, the VeRO notice date, where the goods came from, and asking them to notify eBay of a retraction. This is the primary document." },
+      { "heading": "Response to eBay", "guidance": "A short note recording the item numbers, the steps taken, and that a retraction has been requested." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets: listings removed, images replaced with your own, wording corrected." }
+    ],
+    "opening": "One sentence naming the username, the rights owner, the item numbers and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "appeals_to_ebay", "severity": "blocking", "check": "The primary document is addressed to the rights owner, not to eBay.", "fail_message": "eBay does not overturn a VeRO removal. Only the rights owner can retract it, so the main document must be addressed to them." },
+    { "id": "argues_law", "severity": "blocking", "check": "The request states facts and attaches documents rather than arguing infringement law.", "fail_message": "Legal argument to a rights owner reduces the chance of a retraction. State the facts and ask." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. A rights owner will not act on a form letter." },
+    { "id": "item_numbers_missing", "severity": "blocking", "check": "The item numbers appear in the retraction request.", "fail_message": "A retraction cannot be processed without the item numbers." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "images_unaddressed", "severity": "advisory", "check": "Where the complaint concerns images, the response says the images have been replaced.", "fail_message": "An image complaint is resolved by replacing the images with your own photographs." },
+    { "id": "repeat_unaddressed", "severity": "advisory", "check": "Where this is a repeat removal, the response addresses the account risk.", "fail_message": "Repeat VeRO removals lead to restriction. The response should show the process change that stops it recurring." }
+  ],
+  "submission": {
+    "where": "Email to the rights owner's VeRO contact, then reply to eBay's notice",
+    "steps": [
+      "Find the rights owner's contact on eBay's VeRO participant page or in the notice.",
+      "Send the retraction request email with the item numbers and your evidence attached.",
+      "Reply to eBay's notice recording that a retraction has been requested.",
+      "Do not relist the items until the rights owner retracts."
+    ],
+    "turnaround": "Rights owners vary from a day to several weeks. eBay acts within about 24 hours of receiving a retraction."
+  },
+  "limits": { "target_words_min": 180, "target_words_max": 450, "max_attachments": 8 }
+}

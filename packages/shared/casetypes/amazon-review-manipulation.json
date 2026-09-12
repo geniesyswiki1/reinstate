@@ -1,0 +1,56 @@
+{
+  "id": "amazon-review-manipulation",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Section 3 deactivation, review manipulation or seller code of conduct",
+  "distinguishing_phrases": ["review manipulation", "manipulated customer reviews", "incentivised reviews", "Seller Code of Conduct", "abuse of the ratings", "misused a feature", "communication guidelines"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The appeal opens by naming the account and the notice date.", "required": true },
+    { "id": "conduct_named", "label": "What exactly does the notice say you did?", "type": "longtext", "why": "Code of conduct notices are vague. The appeal has to answer the specific allegation, not the category.", "required": true },
+    { "id": "asins", "label": "Which ASINs or reviews are named, if any?", "type": "longtext", "why": "Where Amazon names them, the appeal addresses each one.", "required": false },
+    { "id": "used_service", "label": "Did you use any review service, insert card, rebate group, or ask for reviews in exchange for anything?", "type": "choice", "options": ["Yes", "No", "A third party did this without my instruction"], "why": "This determines whether the appeal admits and corrects, or evidences that it did not happen. Both can succeed; a denial that is not true cannot.", "required": true },
+    { "id": "third_party", "label": "Who else has had access to your account, listings or marketing? (agency, VA, freelancer)", "type": "longtext", "why": "A large share of these cases come from an agency acting on the seller's behalf. Naming them is part of the root cause.", "required": true },
+    { "id": "inserts", "label": "Do any of your products ship with an insert card, and what does it say?", "type": "longtext", "why": "Insert cards that direct customers to leave positive reviews or offer anything in return are the commonest cause.", "required": true },
+    { "id": "actions_taken", "label": "What have you already stopped, removed or terminated, and on what date?", "type": "longtext", "why": "Corrective actions must already have happened, with dates.", "required": true },
+    { "id": "comms_review", "label": "How are buyer messages and marketing now reviewed before they go out?", "type": "longtext", "why": "Preventive measures need an owner, a review step and a cadence.", "required": true },
+    { "id": "preventive_owner", "label": "Who owns that review?", "type": "text", "why": "An unowned process is not verifiable.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The deactivation notice", "why": "We quote the allegation exactly as Amazon wrote it.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "insert_card", "label": "A photo or file of your current insert card", "why": "Shows the reviewer what the customer actually receives.", "required": false, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "agency_termination", "label": "Evidence the agency or freelancer's access was removed", "why": "Evidences the dated corrective action where a third party caused it.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "comms_templates", "label": "Your current buyer message templates", "why": "Shows the messages comply with Amazon's communication guidelines.", "required": false, "accepts": ["pdf", "png", "jpg", "txt"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Root cause", "guidance": "Say what happened and who did it. Where a third party acted, name the arrangement and the seller's own failure to supervise it. Never claim the allegation is false unless the evidence supports that." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets: access removed, insert cards withdrawn, campaigns stopped, messages rewritten." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets naming the owner, the approval step for any buyer-facing communication, and the cadence of review." }
+    ],
+    "opening": "One sentence naming the seller account and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "flat_denial", "severity": "blocking", "check": "The appeal does not simply deny the allegation without evidence.", "fail_message": "A denial with no evidence behind it is rejected without review." },
+    { "id": "third_party_unnamed", "severity": "blocking", "check": "Where a third party is blamed, the appeal names them and states the seller's own supervisory failure.", "fail_message": "Blaming an agency without naming it, or without owning the failure to supervise, reads as deflection." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. Seller Performance rejects template language." },
+    { "id": "root_cause_restates_notice", "severity": "blocking", "check": "The root cause explains the seller's own act or omission rather than repeating the notice.", "fail_message": "The root cause restates Amazon's notice instead of explaining what you did or failed to do." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question rather than letting the draft generalise." },
+    { "id": "inserts_unaddressed", "severity": "advisory", "check": "The appeal says what the product insert card now says, or that there is none.", "fail_message": "The appeal does not address insert cards, which is what the reviewer will look for." },
+    { "id": "too_long", "severity": "advisory", "check": "Under 600 words.", "fail_message": "Over 600 words. Reviewers skim; the extra length dilutes the specifics." }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, Reactivate your account",
+    "steps": [
+      "Open Seller Central and go to Performance, then Account Health.",
+      "Click Reactivate your account on the deactivation banner.",
+      "Paste the Plan of Action as plain text.",
+      "Attach the insert card, message templates and access removal evidence."
+    ],
+    "turnaround": "Amazon's stated turnaround is 3 to 5 business days."
+  },
+  "limits": { "target_words_min": 350, "target_words_max": 600, "max_attachments": 10 }
+}

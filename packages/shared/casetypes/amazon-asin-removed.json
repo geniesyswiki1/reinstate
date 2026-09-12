@@ -1,0 +1,56 @@
+{
+  "id": "amazon-asin-removed",
+  "platform": "amazon",
+  "tier": "amazon",
+  "name": "Listing (ASIN) removal, product condition or authenticity",
+  "distinguishing_phrases": ["listing has been removed", "ASIN has been deactivated", "used sold as new", "item not as described", "product condition complaints", "your listing was removed", "not account level"],
+  "intake": [
+    { "id": "notice_date", "label": "What date is on the notice?", "type": "date", "why": "The appeal opens by naming the ASIN and the notice date.", "required": true },
+    { "id": "asins", "label": "Which ASIN or ASINs were removed?", "type": "text", "why": "Listing appeals are per ASIN. Naming them is how the case is matched.", "required": true },
+    { "id": "complaint_type", "label": "What does the notice say the complaints were about?", "type": "choice", "options": ["Used sold as new", "Item not as described", "Authenticity", "Product condition", "Expiry or date labelling", "Other"], "why": "Each has a different evidence list. Used sold as new needs packaging and handling evidence, not just invoices.", "required": true },
+    { "id": "supplier_name", "label": "Who supplied this stock?", "type": "text", "why": "The invoice must come from a verifiable business.", "required": true },
+    { "id": "invoice_has_address_phone", "label": "Do the invoices show the supplier's full address and phone number?", "type": "boolean", "why": "An invoice with no phone number is treated as unverifiable.", "required": true },
+    { "id": "fulfilment", "label": "Is this stock FBA or merchant fulfilled?", "type": "choice", "options": ["FBA", "Merchant fulfilled", "Both"], "why": "For FBA, commingling and warehouse handling are legitimate parts of the root cause. For merchant fulfilled they are not.", "required": true },
+    { "id": "storage_handling", "label": "How is the stock stored, packed and checked before it ships?", "type": "longtext", "why": "Condition complaints are answered with handling detail, not with assurances.", "required": true },
+    { "id": "changes_made", "label": "What have you already changed, and on what dates?", "type": "longtext", "why": "Corrective actions carry dates.", "required": true },
+    { "id": "preventive_owner", "label": "Who now inspects stock before it goes out, and how often?", "type": "text", "why": "Preventive measures need an owner and a cadence.", "required": true }
+  ],
+  "evidence": [
+    { "id": "notice", "label": "The listing removal notice", "why": "We quote the ASIN and complaint type exactly.", "required": true, "accepts": ["pdf", "png", "jpg", "txt"] },
+    { "id": "invoices", "label": "Supplier invoices for the ASIN", "why": "The core document for authenticity and condition complaints.", "required": true, "accepts": ["pdf", "png", "jpg"] },
+    { "id": "product_photos", "label": "Photographs of the product and its packaging as you ship it", "why": "Answers used sold as new and condition complaints directly.", "required": false, "accepts": ["png", "jpg", "pdf"] },
+    { "id": "removal_order", "label": "Removal order or stock disposal record, if you removed the FBA stock", "why": "A dated corrective action the reviewer can verify.", "required": false, "accepts": ["pdf", "png", "jpg"] }
+  ],
+  "output": {
+    "sections": [
+      { "heading": "Root cause", "guidance": "Explain the condition or authenticity complaints for this ASIN specifically: sourcing, storage, packing, or commingled FBA stock. Do not restate the notice." },
+      { "heading": "Corrective actions already taken", "guidance": "Dated bullets: stock removed on a date, packaging changed on a date, supplier changed, inspection introduced." },
+      { "heading": "Preventive measures", "guidance": "Dated bullets naming the owner, the inspection step and the cadence." }
+    ],
+    "opening": "One sentence naming the ASIN, the complaint type and the notice date.",
+    "closing": "One line listing the attachments by filename.",
+    "first_person": true
+  },
+  "rejection_patterns": [
+    { "id": "asin_not_named", "severity": "blocking", "check": "The ASIN from the notice appears in the appeal.", "fail_message": "A listing appeal that does not name the ASIN cannot be matched to the case." },
+    { "id": "invoice_after_listing", "severity": "blocking", "check": "No cited invoice is dated after the first listing or first sale date.", "fail_message": "An invoice dated after your first sale cannot evidence the stock that was sold." },
+    { "id": "invoice_missing_contact", "severity": "blocking", "check": "Every cited invoice shows the supplier's full address and phone number.", "fail_message": "Amazon calls the supplier. An invoice with no phone number is treated as unverifiable." },
+    { "id": "undated_corrective", "severity": "blocking", "check": "Every corrective and preventive bullet carries a specific date.", "fail_message": "A corrective action with no date reads as a promise, not an action taken." },
+    { "id": "generic_paragraph", "severity": "blocking", "check": "No paragraph scores above 0.6 for genericity.", "fail_message": "This paragraph could belong to any seller. Seller Performance rejects template language." },
+    { "id": "banned_phrases", "severity": "blocking", "check": "None of: unfortunately, I assure you, please give me one more chance, loyal seller, unfair.", "fail_message": "This phrase appears in rejected appeals more than in accepted ones. Remove it." },
+    { "id": "missing_markers", "severity": "blocking", "check": "No [MISSING: ...] markers remain in the draft.", "fail_message": "A required fact is missing. Answer the question or upload the document." },
+    { "id": "handling_unaddressed", "severity": "advisory", "check": "The appeal describes how stock is stored, packed and inspected.", "fail_message": "Condition complaints are answered with handling detail. The appeal does not give any." },
+    { "id": "too_long", "severity": "advisory", "check": "Under 600 words.", "fail_message": "Over 600 words. Reviewers skim; the extra length dilutes the specifics." }
+  ],
+  "submission": {
+    "where": "Seller Central, Account Health, Product Policy Compliance, the affected ASIN",
+    "steps": [
+      "Open Seller Central and go to Performance, then Account Health.",
+      "Open Product Policy Compliance and find the removed ASIN.",
+      "Click Appeal on that ASIN and paste the Plan of Action as plain text.",
+      "Attach the invoices and product photographs as separate files."
+    ],
+    "turnaround": "Amazon's stated turnaround is 3 to 5 business days."
+  },
+  "limits": { "target_words_min": 300, "target_words_max": 550, "max_attachments": 10 }
+}

@@ -1,0 +1,53 @@
+{
+  "case_type": "amazon-inauthentic",
+  "answers": {
+    "notice_date": "2026-03-04",
+    "asins": "B0ABC12345, B0DEF67890",
+    "supplier_name": "Bright Wholesale Ltd",
+    "supplier_relationship": "I opened a trade account with Bright Wholesale Ltd in November 2025 after meeting them at the Spring Fair trade show. I have placed four orders with them since.",
+    "supplier_is_authorised": "No",
+    "invoice_has_address_phone": "Yes",
+    "purchase_dates": "3 March 2026 and 18 January 2026",
+    "first_listing_date": "2026-01-20",
+    "units_invoiced": "240",
+    "units_sold": "260",
+    "was_arbitrage": "No",
+    "items_genuine": "Yes, genuine and I can evidence the chain",
+    "complaint_reason": "I listed the ASINs on 20 January 2026 using stock from an order I had not yet reconciled against a purchase order, so 20 of the units I sold came from an earlier mixed pallet I could not tie to a single invoice. I had no goods-in record linking each unit to a purchase order.",
+    "changes_made": "I stopped selling both ASINs on 5 March 2026. I obtained a reissued invoice from Bright Wholesale Ltd on 9 March 2026 showing their full address and phone number. I introduced a goods-in log on 10 March 2026 that records the purchase order number against every unit received.",
+    "preventive_owner": "My warehouse manager, Dele Okafor, checks every inbound delivery against the purchase order on the day it arrives.",
+    "prior_appeals": ""
+  },
+  "facts": [
+    {
+      "filename": "invoice-bright-wholesale-0303.pdf",
+      "fact": {
+        "doc_type": "invoice",
+        "issuer": "Bright Wholesale Ltd",
+        "dates": ["2026-03-03"],
+        "addresses": ["Unit 7 Cheston Industrial Estate, Birmingham B6 7PL, United Kingdom"],
+        "phone": "0121 496 0188",
+        "amounts": ["£3,840.00"],
+        "identifiers": ["B0ABC12345", "B0DEF67890"],
+        "quantities": ["240 units"],
+        "flags": [],
+        "summary": "Invoice from Bright Wholesale Ltd, dated 3 March 2026, 240 units, ASINs B0ABC12345 and B0DEF67890."
+      }
+    },
+    {
+      "filename": "invoice-bright-wholesale-late.pdf",
+      "fact": {
+        "doc_type": "invoice",
+        "issuer": "Bright Wholesale Ltd",
+        "dates": ["2026-03-10"],
+        "addresses": ["Unit 7 Cheston Industrial Estate, Birmingham B6 7PL, United Kingdom"],
+        "phone": "0121 496 0188",
+        "amounts": ["£520.00"],
+        "identifiers": ["B0ABC12345"],
+        "quantities": ["40 units"],
+        "flags": ["date after listing"],
+        "summary": "Invoice from Bright Wholesale Ltd, dated 10 March 2026, 40 units, ASIN B0ABC12345. Dated after the first listing date of 20 January 2026."
+      }
+    }
+  ]
+}
