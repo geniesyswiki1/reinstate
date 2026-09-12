@@ -57,7 +57,14 @@ export function isConfigError(err: unknown): boolean {
 const ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
 export async function callAnthropic(call: MessageCall): Promise<MessageResult> {
-  const apiKey = call.apiKey ?? process.env.ANTHROPIC_API_KEY;
+  /**
+   * Trimmed and unquoted because host dashboards and .env files routinely store a key with a
+   * trailing newline or wrapping quotes, and the only symptom is a 401 that looks exactly like a
+   * revoked key. Cheap to defend against, expensive to diagnose.
+   */
+  const apiKey = (call.apiKey ?? process.env.ANTHROPIC_API_KEY ?? '')
+    .trim()
+    .replace(/^['"]|['"]$/g, '');
   if (!apiKey) throw new ConfigError('ANTHROPIC_API_KEY is not set');
 
   const res = await fetch(ENDPOINT, {
